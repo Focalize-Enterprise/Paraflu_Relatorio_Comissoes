@@ -1,6 +1,6 @@
 ﻿using SAPbobsCOM;
 
-namespace ADDON_PARAFLU.diapi
+namespace ADDON_PARAFLU.DIAPI.Interfaces
 {
     public interface IAPI
     {

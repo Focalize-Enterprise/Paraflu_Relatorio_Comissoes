@@ -1,54 +1,46 @@
-﻿using ADDON_PARAFLU.Forms.Recursos;
-using MimeKit;
+﻿using MimeKit;
 using SAPbobsCOM;
 using System;
 using System.Net;
 using Framework = SAPbouiCOM.Framework;
 using System.Net.Mail;
 using Attachment = System.Net.Mail.Attachment;
+using ADDON_PARAFLU.FORMS.Recursos;
+using ADDON_PARAFLU.servicos.Interfaces;
+using ADDON_PARAFLU.DIAPI.Interfaces;
 
 namespace ADDON_PARAFLU.Uteis
 {
-    internal sealed class Email
+    public sealed class Email : IEmail
     {
         internal string Name { get; set; }
         internal string E_mail { get; set; }
         internal string Senha { get; set; }
         internal string Host { get; set; }
         internal int Porta { get; set; }
-        
 
-        public Email(string name, string e_mail, string senha, string host, int porta)
+        private readonly IAPI _api;
+
+        public Email(IAPI api)
         {
-            Name = name;
-            E_mail = e_mail;
-            Senha = senha;
-            Host = host;
-            Porta = porta;
+            _api = api;
         }
 
-        public Email()
+        public void GetParamEmail()
         {
-        }
-
-        public Email GetParamEmail(int code)
-        {
-            Recordset recordset = (Recordset)DIAPI.API.Company.GetBusinessObject(BoObjectTypes.BoRecordset);
-            string query = Queries.Param_EMAIL.Replace("@code", code.ToString());
+            Recordset recordset = (Recordset)_api.Company.GetBusinessObject(BoObjectTypes.BoRecordset);
+            string query = Queries.Param_Email;
             recordset.DoQuery(query);
             if (recordset.RecordCount < 1)
                 throw new Exception("Não há nenhum valor parametrizado para o Email");
 
-            return new Email()
-            {
-                E_mail = recordset.Fields.Item("U_Email").Value.ToString(),
-                Host = recordset.Fields.Item("U_host").Value.ToString(),
-                Name = recordset.Fields.Item("Name").Value.ToString(),
-                Senha = recordset.Fields.Item("U_senha").Value.ToString(),
-                Porta = (int)recordset.Fields.Item("U_porta").Value,
-            };
+            E_mail = recordset.Fields.Item("U_Email").Value.ToString();
+            Host = recordset.Fields.Item("U_host").Value.ToString();
+            Name = recordset.Fields.Item("Name").Value.ToString();
+            Senha = recordset.Fields.Item("U_senha").Value.ToString();
+            Porta = (int)recordset.Fields.Item("U_porta").Value;
         }
-       
+
         public void EnviarPorEmail(string destinationName, string destinationEmail, string[] anexos, string body, bool sendToSelf = false)
         {
             SmtpClient smtp = new SmtpClient(Host, Porta);
@@ -95,6 +87,6 @@ namespace ADDON_PARAFLU.Uteis
                 // descarta o socket
                 smtp.Dispose();
             }
-          }
+        }
     }
 }

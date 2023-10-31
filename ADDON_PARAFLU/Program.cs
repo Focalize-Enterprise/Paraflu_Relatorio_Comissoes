@@ -1,5 +1,8 @@
-using ADDON_PARAFLU.diapi;
+using ADDON_PARAFLU.DIAPI;
+using ADDON_PARAFLU.DIAPI.Interfaces;
 using ADDON_PARAFLU.FORMS.UserForms;
+using ADDON_PARAFLU.servicos.Interfaces;
+using ADDON_PARAFLU.Uteis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Application = SAPbouiCOM.Framework.Application;
@@ -28,8 +31,7 @@ namespace ADDON_PARAFLU
                     services.AddSingleton(typeof(IAPI), typeof(API));
                     services.AddSingleton(typeof(IMenu), typeof(Menu));
                  // serviços usados pelos formulários
-                    services.AddTransient<IFOC_SPLITC_CONF, FOC_SPLITC_CONF>();
-                    services.AddTransient<IDraft_Service, Draft_Service>();
+                    services.AddTransient<IEmail, Email>();
                  // formularios abaixo
                     services.AddTransient<EnvioDeRelatorioPorComissoes>();
                 })
