@@ -44,4 +44,16 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Pasinato\Add-on_Pasinato new\CrystalReportsLibrary\CrystalReportsLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Report\" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy /Y &quot;$(SolutionDir)Report\ReportComissões.rpt&quot; &quot;$(SolutionDir)bin\$(Configuration)\ReportComissões.rpt&quot;" />
+  </Target>
+
 </Project>

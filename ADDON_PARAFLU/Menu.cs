@@ -24,7 +24,7 @@ namespace ADDON_PARAFLU
 
             oCreationPackage.Type = SAPbouiCOM.BoMenuType.mt_POPUP;
             oCreationPackage.UniqueID = "Comissoes.menu";
-            oCreationPackage.String = "Relacionamento - Premiação Vendedores";
+            oCreationPackage.String = "Comissões";
             oCreationPackage.Enabled = true;
             oCreationPackage.Position = -1;
             SAPbouiCOM.Menus oMenus = oMenuItem.SubMenus;
@@ -46,7 +46,7 @@ namespace ADDON_PARAFLU
 
                 oCreationPackage.Type = SAPbouiCOM.BoMenuType.mt_STRING;
                 oCreationPackage.UniqueID = "EnvioComissoes_Form";
-                oCreationPackage.String = " Venderores - Envio de Relatórios";
+                oCreationPackage.String = " Vendedores - Envio de Relatórios";
                 oMenus.AddEx(oCreationPackage);
 
             }

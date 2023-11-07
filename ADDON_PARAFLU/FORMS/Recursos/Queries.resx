@@ -123,10 +123,11 @@
 "SlpCode" as 'Código',
 "SlpName" as 'Nome do Vendedor',
 "Email" as 'Email do vendedor',
+"DocDate" as 'Data de geração',
 sum("LineTotal") as "Total",
 sum("IPI") as "IPI",
 sum("ICMSST") as "ICMS-ST",
-sum(("LineTotal" + "IPI" + "ICMSST")*("Com"/100) )
+sum(("LineTotal" + isnull("IPI", 0) + isnull("ICMSST", 0))*("Com") )/100 as 'Comissão'
  from (
 
 SELECT 
@@ -191,11 +192,13 @@ FROM ORIN T0 INNER JOIN RIN1 T1 ON T0."DocEntry" = T1."DocEntry"
              INNER JOIN OSLP T2 ON T0."SlpCode" = T2."SlpCode"
              
 WHERE
-T0."CANCELED" = 'N' AND
+T0."CANCELED" = 'N'
+And T0.docdate between 'Dataini'
+And 'Datafim'
 --T0."DocDate" BETWEEN '[%0]' AND '[%1]' and
 --t1."Usage" in (52,60) and T3."ExpnsCode"=-1 AND
-T3."RelateType"=1) x
-group by "SlpName", "Email", "SlpCode"</value>
+AND T3."RelateType"=1) x
+group by "SlpName", "Email", "SlpCode", "DocDate"</value>
   </data>
   <data name="Param_Email" xml:space="preserve">
     <value>SELECT TOP 1 * FROM "@FOC_EMAIL_PARAM"</value>

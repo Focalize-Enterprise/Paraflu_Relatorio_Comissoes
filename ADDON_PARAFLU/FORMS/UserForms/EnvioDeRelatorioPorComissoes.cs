@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SAPbouiCOM;
 using ADDON_PARAFLU.Uteis;
 using System.Globalization;
+using ADDON_PARAFLU.Uteis.Interfaces;
 
 namespace ADDON_PARAFLU.FORMS.UserForms
 {
@@ -19,15 +20,17 @@ namespace ADDON_PARAFLU.FORMS.UserForms
         private readonly SAPbouiCOM.Form form;
         private readonly IAPI _api;
         private readonly IEmail _email;
+        private readonly IPDFs _pdfs;
         private DataTable table;
         private double totalValue = 0;
         private Dictionary<string, Vendedores> vendedores = new Dictionary<string, Vendedores>();
 
 
-        public EnvioDeRelatorioPorComissoes(IAPI api, IEmail email)
+        public EnvioDeRelatorioPorComissoes(IAPI api, IEmail email, IPDFs pdfs)
         {
             _api = api;
             _email = email;
+            _pdfs = pdfs;
 
             FormCreationParams cp = null;
             string xmlFormCode = Recursos.Recursos.EnvioComissões.ToString();
@@ -76,9 +79,9 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                                         AtualizaGrid();
                                     }
                                     break;
-                                case "Item_":
+                                case "Item_8":
                                     {
-                                        //EnviaEmails();
+                                        EnviaEmails();
                                     }
                                     break;
                             }
@@ -106,12 +109,13 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                                         string vendedor = grid.DataTable.Columns.Item("Código").Cells.Item(row).Value.ToString();
                                         string email = grid.DataTable.Columns.Item("Email do vendedor").Cells.Item(row).Value.ToString();
 
+                                        string valor = dt.GetValue("Comissão", row).ToString();
                                         double val = 0;
                                         if (vendedores.TryGetValue(vendedor, out Vendedores value))
                                         {
-                                            totalValue += Convert.ToDouble(dt.GetValue("Total", row).ToString().Remove(3, 2), new CultureInfo("pt-BR"));
+                                            totalValue += Convert.ToDouble(dt.GetValue("Comissão", row).ToString(), new CultureInfo("pt-BR"));
                                             val = Math.Round(totalValue, 2);
-                                            ((EditText)form.Items.Item("Item_11").Specific).Value = "R$ " + val.ToString(new CultureInfo("pt-BR"));
+                                            ((EditText)form.Items.Item("Item_11").Specific).Value = val.ToString(new CultureInfo("en-US"));
                                             return;
                                         }
 
@@ -122,9 +126,9 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                                         };
 
                                         vendedores.Add(vendedor, rep);
-                                        totalValue += Convert.ToDouble(dt.GetValue("Total", row).ToString().Remove(0, 3), new CultureInfo("pt-BR"));
+                                        totalValue += Convert.ToDouble(dt.GetValue("Comissão", row).ToString(), new CultureInfo("pt-BR"));
                                         val = Math.Round(totalValue, 2);
-                                        ((EditText)form.Items.Item("Item_11").Specific).Value = "R$ " + val.ToString(new CultureInfo("pt-BR"));
+                                        ((EditText)form.Items.Item("Item_11").Specific).Value = val.ToString(new CultureInfo("en-US"));
                                     }
                                     else
                                     {
@@ -133,9 +137,9 @@ namespace ADDON_PARAFLU.FORMS.UserForms
 
                                         if (vendedores.TryGetValue(vendedor, out Vendedores value))
                                         {
-                                            totalValue -= Convert.ToDouble(grid.DataTable.Columns.Item("Total").Cells.Item(row).Value.ToString().Remove(0, 3), new CultureInfo("pt-BR"));
+                                            totalValue -= Convert.ToDouble(grid.DataTable.Columns.Item("Comissão").Cells.Item(row).Value.ToString(), new CultureInfo("pt-BR"));
                                             double val = Math.Round(totalValue, 2);
-                                            ((EditText)form.Items.Item("Item_11").Specific).Value = "R$ " + val.ToString(new CultureInfo("pt-BR"));
+                                            ((EditText)form.Items.Item("Item_11").Specific).Value = val.ToString(new CultureInfo("en-US"));
                                             return;
                                         }
                                     }
@@ -151,8 +155,6 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                             }
                         }
                         break;
-                        
-
                 }
             }
         }
@@ -163,20 +165,25 @@ namespace ADDON_PARAFLU.FORMS.UserForms
             {
                 DataTable dt = form.DataSources.DataTables.Item("DT_0");
                 Grid grid = (Grid)form.Items.Item("Item_6").Specific;
-
-                //string value = ((EditText)this.form.Items.Item("Item_3").Specific).Value;
-                //string dataini = ((EditText)this.form.Items.Item("Item_3").Specific).Value;
-                //string datafim = ((EditText)this.form.Items.Item("Item_4").Specific).Value;
-                //dataini = dataini.Substring(0, 4) + "/" + dataini.Substring(4, 2) + "/" + dataini.Substring(6, 2);
-                //datafim = datafim.Substring(0, 4) + "/" + datafim.Substring(4, 2) + "/" + datafim.Substring(6, 2);
-                //if (string.IsNullOrEmpty(value))
-                //{
-                //    SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Selecione um perido", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Warning);
-                //    return;
-                //}
-                dt.ExecuteQuery(Queries.Notas_Fiscais);
+                string dataini = ((EditText)this.form.Items.Item("Item_3").Specific).Value;
+                string datafim = ((EditText)this.form.Items.Item("Item_4").Specific).Value;
+                dataini = dataini.Substring(0, 4) + "/" + dataini.Substring(4, 2) + "/" + dataini.Substring(6, 2);
+                datafim = datafim.Substring(0, 4) + "/" + datafim.Substring(4, 2) + "/" + datafim.Substring(6, 2);
+                if (string.IsNullOrEmpty(dataini))
+                {
+                    SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Selecione um perido", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Warning);
+                    return;
+                }
+                if (string.IsNullOrEmpty(datafim))
+                {
+                }
+                string query = Queries.Notas_Fiscais.Replace("Dataini", dataini).Replace("Datafim", datafim);
+                dt.ExecuteQuery(query);
                 grid.Columns.Item("Selecionado").Type = BoGridColumnType.gct_CheckBox;
-                //string query = Queries.Notas_Fiscais.Replace("Dataini", dataini).Replace("Datafim", datafim);
+                for (int index = 0; index < grid.Columns.Count; index++)
+                    grid.Columns.Item(index).Editable = false;
+                grid.Columns.Item("Selecionado").Editable = true;
+
             }
             catch (Exception ex)
             {
@@ -188,40 +195,41 @@ namespace ADDON_PARAFLU.FORMS.UserForms
             }
         }
 
-        //private void EnviaEmails()
-        //{
-        //    form.Freeze(true);
-        //    DataTable dt = form.DataSources.DataTables.Item("DT_0");
-        //    try
-        //    {
-        //        form.Freeze(true);
-        //        Vendedores[] values = vendedores.Values.ToArray();
-        //        for (int index = 0; index < values.Length; index++)
-        //        {
-        //            Vendedores vendedores = values[index];
+        private void EnviaEmails()
+        {
+            form.Freeze(true);
+            DataTable dt = form.DataSources.DataTables.Item("DT_0");
+            try
+            {
+                form.Freeze(true);
+                Vendedores[] values = vendedores.Values.ToArray();
+                for (int index = 0; index < values.Length; index++)
+                {
+                    Vendedores vendedores = values[index];
+                    string user = "sa";
+                    string senha = "@B1Admin123#";
+                    string cardCode = vendedores.Code;
+                    string periodo2 = ((EditText)this.form.Items.Item("Item_4").Specific).Value;
+                    string periodo1 = ((EditText)this.form.Items.Item("Item_3").Specific).Value;
+                    periodo1 = periodo1.Substring(0, 4) + "-" + periodo1.Substring(4, 2) + "-" + periodo1.Substring(6, 2);
+                    periodo2 = periodo2.Substring(0, 4) + "-" + periodo2.Substring(4, 2) + "-" + periodo2.Substring(6, 2);
+                    //string body = ((SAPbouiCOM.EditText)form.Items.Item("ETTX_EM").Specific).Value;
+                    string caminhoPdf = _pdfs.GeraPDF(periodo1, periodo2, cardCode, user, senha);
+                    string[] anexos = new string[] { caminhoPdf };
 
-        //            string cardCode = vendedores.Code;
-        //            string serial = vendedores.NfsAsSQLValue();
-        //            string periodo1 = ((EditText)this.form.Items.Item("Item_5").Specific).Value;
-        //            string periodo2 = ((EditText)this.form.Items.Item("Item_4").Specific).Value;
-        //            periodo1 = periodo1.Substring(0, 4) + "-" + periodo1.Substring(4, 2) + "-" + periodo1.Substring(6, 2);
-        //            periodo2 = periodo2.Substring(0, 4) + "-" + periodo2.Substring(4, 2) + "-" + periodo2.Substring(6, 2);
-        //            string body = ((SAPbouiCOM.EditText)form.Items.Item("ETTX_EM").Specific).Value;
-        //            string[] anexos = new string[2] { caminhoPdf, caminhoExcel };
+                    _email.EnviarPorEmail(vendedores.E_Mail.Split('@').First(), vendedores.E_Mail, anexos);
 
-        //            _email.EnviarPorEmail(value.Split('@').First(), value, anexos, body);
-
-        //            SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Email enviado com sucesso!", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Success);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        SAPbouiCOM.Framework.Application.SBO_Application.MessageBox($"Erro ao enviar email:{ex.Message}");
-        //    }
-        //    finally
-        //    {
-        //        form.Freeze(false);
-        //    }
-        //}
+                    SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Email enviado com sucesso!", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Success);
+                }
+            }
+            catch (Exception ex)
+            {
+                SAPbouiCOM.Framework.Application.SBO_Application.MessageBox($"Erro ao enviar email:{ex.Message}");
+            }
+            finally
+            {
+                form.Freeze(false);
+            }
+        }
     }
 }

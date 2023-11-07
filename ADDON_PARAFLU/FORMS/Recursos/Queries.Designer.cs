@@ -66,10 +66,11 @@ namespace ADDON_PARAFLU.FORMS.Recursos {
         ///&quot;SlpCode&quot; as &apos;Código&apos;,
         ///&quot;SlpName&quot; as &apos;Nome do Vendedor&apos;,
         ///&quot;Email&quot; as &apos;Email do vendedor&apos;,
+        ///&quot;DocDate&quot; as &apos;Data de geração&apos;,
         ///sum(&quot;LineTotal&quot;) as &quot;Total&quot;,
         ///sum(&quot;IPI&quot;) as &quot;IPI&quot;,
         ///sum(&quot;ICMSST&quot;) as &quot;ICMS-ST&quot;,
-        ///sum((&quot;LineTotal&quot; + &quot;IPI&quot; + &quot;ICMSST&quot;)*(&quot;Com&quot;/100) )
+        ///sum((&quot;LineTotal&quot; + isnull(&quot;IPI&quot;, 0) + isnull(&quot;ICMSST&quot;, 0))*(&quot;Com&quot;) )/100 as &apos;Comissão&apos;
         /// from (
         ///
         ///SELECT 
@@ -85,10 +86,7 @@ namespace ADDON_PARAFLU.FORMS.Recursos {
         ///T2.&quot;Email&quot;,
         ///T0.&quot;Serial&quot;, 
         ///T1.&quot;ItemCode&quot;, 
-        ///T1.&quot;Dscription&quot;, 
-        ///T1.&quot;Quantity&quot;, 
-        ///T1.&quot;Price&quot;, 
-        ///T1.&quot;LineTotal&quot;*(1 - (T0.&quot;D [o restante da cadeia de caracteres foi truncado]&quot;;.
+        ///T1.&quot;D [o restante da cadeia de caracteres foi truncado]&quot;;.
         /// </summary>
         internal static string Notas_Fiscais {
             get {
