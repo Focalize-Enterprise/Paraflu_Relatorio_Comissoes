@@ -214,7 +214,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                     periodo1 = periodo1.Substring(0, 4) + "-" + periodo1.Substring(4, 2) + "-" + periodo1.Substring(6, 2);
                     periodo2 = periodo2.Substring(0, 4) + "-" + periodo2.Substring(4, 2) + "-" + periodo2.Substring(6, 2);
                     //string body = ((SAPbouiCOM.EditText)form.Items.Item("ETTX_EM").Specific).Value;
-                    string caminhoPdf = _pdfs.GeraPDF(periodo1, periodo2, cardCode, user, senha);
+                    string caminhoPdf = _pdfs.GeraPDF(periodo1, periodo2, cardCode, user, senha, "", "");
                     string[] anexos = new string[] { caminhoPdf };
 
                     _email.EnviarPorEmail(vendedores.E_Mail.Split('@').First(), vendedores.E_Mail, anexos);
