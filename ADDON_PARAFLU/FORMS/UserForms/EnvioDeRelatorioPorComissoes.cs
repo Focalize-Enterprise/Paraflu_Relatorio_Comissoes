@@ -183,7 +183,6 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 for (int index = 0; index < grid.Columns.Count; index++)
                     grid.Columns.Item(index).Editable = false;
                 grid.Columns.Item("Selecionado").Editable = true;
-
             }
             catch (Exception ex)
             {
@@ -196,6 +195,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
         }
 
         private void EnviaEmails()
+
         {
             form.Freeze(true);
             DataTable dt = form.DataSources.DataTables.Item("DT_0");
