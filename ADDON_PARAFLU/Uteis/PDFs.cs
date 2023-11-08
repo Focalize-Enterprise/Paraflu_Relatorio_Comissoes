@@ -1,47 +1,49 @@
 ﻿using ADDON_PARAFLU.DIAPI.Interfaces;
 using ADDON_PARAFLU.Uteis.Interfaces;
-using CristalReportsLibrary.Models;
 using SAPbobsCOM;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using System.IO;
 
 namespace ADDON_PARAFLU.Uteis
 {
     public class PDFs : IPDFs
     {
         private readonly IAPI _api;
-        internal string periodo1 { get; set; }
-        internal string periodo2 { get; set; }
-        internal string cardCode { get; set; }
-        internal string DBuser { get; set; }
-        internal string DBsenha { get; set; }
+        private bool timeout = false;
 
         public PDFs(IAPI api)
         {
             _api = api;
         }
-        public string GeraPDF(string periodo1, string periodo2, string cardCode, string DBuser, string DBsenha, string caminho = "")
+        public string GeraPDF(string periodo1, string periodo2, string cardCode, string DBuser, string DBsenha, string reportPath, string pdfPath)
         {
-            string server = _api.Company.Server;
+            string server = _api.Company!.Server;
             string banco = _api.Company.CompanyDB;
             string user = DBuser;
             string pass = DBsenha;
-            ReportData data = new ReportData()
+            string servicePath = @$"{Application.StartupPath}\\Report\\CrystalReport.exe";
+            string exeArgs = $@"""{periodo1} {periodo2} {cardCode} {server} {banco} {user} {pass} {reportPath} {pdfPath}""";
+            ProcessStartInfo info = new(servicePath)
             {
-                banco = banco,
-                cardCode = cardCode,
-                pass = pass,
-                user = user,
-                periodo1 = periodo1,
-                periodo2 = periodo2,
-                server = server,
-                reportExeName = "Report",
+                Arguments = exeArgs
             };
 
-            return CristalReportsLibrary.Report.GenerateReport(data, caminho);
+            var process = Process.Start(info);
+            Stopwatch watch = new Stopwatch();
+            bool sucess = false;
+            if (process is not null)
+            {
+                watch.Start();
+                while (!process.HasExited && watch.Elapsed.Seconds < 20) { }
+                if (process.ExitCode == 0)
+                    sucess = true;
+                else if (!process.HasExited)
+                    process.Close();
+
+                watch.Stop();
+            }
+
+            return sucess ? pdfPath : "";
         }
 
         private (string user, string senha) GetDataForBD()
