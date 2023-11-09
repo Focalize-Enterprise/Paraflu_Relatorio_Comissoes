@@ -12,6 +12,9 @@ namespace CrystalReport
         [STAThread]
         static void Main(string [] args)
         {
+            string info = args[0];
+            args = info.Split(';');
+            MessageBox.Show(info);
             ReportData data = new ReportData()
             {
                 periodo1 = args[0],

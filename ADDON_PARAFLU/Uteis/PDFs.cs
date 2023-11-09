@@ -22,7 +22,7 @@ namespace ADDON_PARAFLU.Uteis
             string user = DBuser;
             string pass = DBsenha;
             string servicePath = @$"{Application.StartupPath}\\Report\\CrystalReport.exe";
-            string exeArgs = $@"""{periodo1} {periodo2} {cardCode} {server} {banco} {user} {pass} {reportPath} {pdfPath}""";
+            string exeArgs = $@"""{periodo1};{periodo2};{cardCode};{server};{banco};{user};{pass};{reportPath};{pdfPath}""";
             ProcessStartInfo info = new(servicePath)
             {
                 Arguments = exeArgs
@@ -42,6 +42,7 @@ namespace ADDON_PARAFLU.Uteis
 
                 watch.Stop();
             }
+            sucess = File.Exists(pdfPath);
 
             return sucess ? pdfPath : "";
         }

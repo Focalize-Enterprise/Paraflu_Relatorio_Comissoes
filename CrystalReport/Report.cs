@@ -20,20 +20,19 @@ namespace CrystalReport
             // lembrar de mudar o Report para o servidor da Pasinato caso haja um problema de vendedor da base 
             ReportDocument report = new ReportDocument();
             // load do crystal passando o caminho da aplicação.
-            string path = AppDomain.CurrentDomain.BaseDirectory;
-            report.Load(path + $"\\{_data.reportExeName}.rpt");
+            report.Load(_data.reportExeName);
             report.Refresh();
             report.DataSourceConnections.Clear();
 
             // parâmetros do crystal. 
-            report.SetParameterValue("dataInicio", _data.periodo1);
-            report.SetParameterValue("dataFim", _data.periodo2);
+            report.SetParameterValue("DateI", _data.periodo1);
+            report.SetParameterValue("DateF", _data.periodo2);
             report.SetParameterValue("SlpCode", _data.cardCode);
 
             for (int i = 0; i < report.Subreports.Count; i++)
             {
-                report.SetParameterValue("dataInicio", _data.periodo1, report.Subreports[i].Name);
-                report.SetParameterValue("dataFim", _data.periodo2, report.Subreports[i].Name);
+                report.SetParameterValue("DateI", _data.periodo1, report.Subreports[i].Name);
+                report.SetParameterValue("DateF", _data.periodo2, report.Subreports[i].Name);
                 report.SetParameterValue("SlpCode", _data.cardCode);
             }
 

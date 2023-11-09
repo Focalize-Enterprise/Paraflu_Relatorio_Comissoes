@@ -206,15 +206,19 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 for (int index = 0; index < values.Length; index++)
                 {
                     Vendedores vendedores = values[index];
+                    string reportPath = @$"{System.Windows.Forms.Application.StartupPath}ReportComissões.rpt";
                     string user = "sa";
+                    string caminho = "";
                     string senha = "@B1Admin123#";
                     string cardCode = vendedores.Code;
                     string periodo2 = ((EditText)this.form.Items.Item("Item_4").Specific).Value;
                     string periodo1 = ((EditText)this.form.Items.Item("Item_3").Specific).Value;
                     periodo1 = periodo1.Substring(0, 4) + "-" + periodo1.Substring(4, 2) + "-" + periodo1.Substring(6, 2);
                     periodo2 = periodo2.Substring(0, 4) + "-" + periodo2.Substring(4, 2) + "-" + periodo2.Substring(6, 2);
+                    if(string.IsNullOrEmpty(caminho))
+                    caminho = $"C:\\Temp\\{cardCode}.pdf";
                     //string body = ((SAPbouiCOM.EditText)form.Items.Item("ETTX_EM").Specific).Value;
-                    string caminhoPdf = _pdfs.GeraPDF(periodo1, periodo2, cardCode, user, senha, "", "");
+                    string caminhoPdf = _pdfs.GeraPDF(periodo1, periodo2, cardCode, user, senha, reportPath, caminho);
                     string[] anexos = new string[] { caminhoPdf };
 
                     _email.EnviarPorEmail(vendedores.E_Mail.Split('@').First(), vendedores.E_Mail, anexos);

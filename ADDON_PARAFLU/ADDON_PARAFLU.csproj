@@ -49,7 +49,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy /Y &quot;$(SolutionDir)Report\ReportComissões.rpt&quot; &quot;$(SolutionDir)bin\$(Configuration)\ReportComissões.rpt&quot;" />
+    <Exec Command="copy /Y &quot;$(SolutionDir)Report\ReportComissões.rpt&quot; &quot;$(SolutionDir)bin\$(Configuration)\net6.0-windows\ReportComissões.rpt&quot;" />
   </Target>
 
 </Project>
