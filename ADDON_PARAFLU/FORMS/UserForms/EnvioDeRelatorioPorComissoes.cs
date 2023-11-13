@@ -11,6 +11,7 @@ using SAPbouiCOM;
 using ADDON_PARAFLU.Uteis;
 using System.Globalization;
 using ADDON_PARAFLU.Uteis.Interfaces;
+using SAPbobsCOM;
 
 namespace ADDON_PARAFLU.FORMS.UserForms
 {
@@ -169,6 +170,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 string datafim = ((EditText)this.form.Items.Item("Item_4").Specific).Value;
                 dataini = dataini.Substring(0, 4) + "/" + dataini.Substring(4, 2) + "/" + dataini.Substring(6, 2);
                 datafim = datafim.Substring(0, 4) + "/" + datafim.Substring(4, 2) + "/" + datafim.Substring(6, 2);
+                string query = "";
                 if (string.IsNullOrEmpty(dataini))
                 {
                     SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Selecione um perido", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Warning);
@@ -177,7 +179,10 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 if (string.IsNullOrEmpty(datafim))
                 {
                 }
-                string query = Queries.Notas_Fiscais.Replace("Dataini", dataini).Replace("Datafim", datafim);
+                if (_api.Company.DbServerType != BoDataServerTypes.dst_HANADB)
+                    query = Queries.Notas_Fiscais_SQL.Replace("Dataini", dataini).Replace("Datafim", datafim);
+                else
+                    query = Queries.Notas_Fiscais_HANA.Replace("Dataini", dataini).Replace("Datafim", datafim);
                 dt.ExecuteQuery(query);
                 grid.Columns.Item("Selecionado").Type = BoGridColumnType.gct_CheckBox;
                 for (int index = 0; index < grid.Columns.Count; index++)

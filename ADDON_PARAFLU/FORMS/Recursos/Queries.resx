@@ -117,21 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Notas_Fiscais" xml:space="preserve">
-    <value>Select
-'N' as 'Selecionado',
-"SlpCode" as 'Código',
-"SlpName" as 'Nome do Vendedor',
-"Email" as 'Email do vendedor',
-"DocDate" as 'Data de geração',
+  <data name="Notas_Fiscais_HANA" xml:space="preserve">
+    <value>Select  
+'N' as "Selecionado",
+"SlpCode" as "Código",
+"SlpName" as "Nome do Vendedor",
+"Email" as "Email do vendedor",
+"DocDate" as "Data de geração",
 sum("LineTotal") as "Total",
 sum("IPI") as "IPI",
 sum("ICMSST") as "ICMS-ST",
-sum(("LineTotal" + isnull("IPI", 0) + isnull("ICMSST", 0))*("Com") )/100 as 'Comissão'
- from (
+sum(("LineTotal" + ifnull("IPI", 0) + ifnull("ICMSST", 0))*("Com") )/100 as "Comissão"
+ from 
+ 
+ (
 
-SELECT 
-'NS' Doc,
+SELECT  top 10 
+'NS' "Doc",
 T0."ObjType",
 T0."DocEntry", 
 T0."DocDate", 
@@ -148,8 +150,8 @@ T1."Quantity",
 T1."Price", 
 T1."LineTotal"*(1 - (T0."DiscPrcnt"/100)) as "LineTotal", 
 T3."TaxSum" IPI,
-ISNULL(T4."TaxSum",0) ICMSST, 
-ISNULL(T1."U_FOC_Comissao",0) as "Com"
+IfNULL(T4."TaxSum",0) ICMSST, 
+IfNULL(T1."U_FOC_Comissao",0) as "Com"
 
 FROM OINV T0 INNER JOIN INV1 T1 ON T0."DocEntry" = T1."DocEntry"
              INNER JOIN INV4 T3 ON T0."DocEntry" = T3."DocEntry" AND T1."LineNum" = T3."LineNum" AND T3."staType" = 16
@@ -158,8 +160,8 @@ FROM OINV T0 INNER JOIN INV1 T1 ON T0."DocEntry" = T1."DocEntry"
              
 WHERE
 T0."CANCELED" = 'N' AND
---T0."DocDate" BETWEEN '[%0]' AND '[%1]' and
---t1."Usage" in (52,60) AND
+T0."DocDate" between 'Dataini' And 'Datafim' and
+t1."Usage" in (52,60) AND
 T3."ExpnsCode"=-1 AND
 T3."RelateType"=1
 
@@ -183,8 +185,8 @@ T1."Quantity",
 T1."Price", 
 T1."LineTotal" * (1 - (T0."DiscPrcnt"/100)) * (-1) as "LineTotal", 
 (T3."TaxSum")*(-1) IPI,
-ISNULL(T4."TaxSum",0) * -1 ICMSST,
-(ISNULL(T1."U_FOC_Comissao",0))
+IfNULL(T4."TaxSum",0) * -1 ICMSST,
+(IfNULL(T1."U_FOC_Comissao",0))
 
 FROM ORIN T0 INNER JOIN RIN1 T1 ON T0."DocEntry" = T1."DocEntry"
              INNER JOIN RIN4 T3 ON T0."DocEntry" = T3."DocEntry" AND T1."LineNum" = T3."LineNum" AND T3."staType" = 16
@@ -192,13 +194,92 @@ FROM ORIN T0 INNER JOIN RIN1 T1 ON T0."DocEntry" = T1."DocEntry"
              INNER JOIN OSLP T2 ON T0."SlpCode" = T2."SlpCode"
              
 WHERE
-T0."CANCELED" = 'N'
-And T0.docdate between 'Dataini'
-And 'Datafim'
---T0."DocDate" BETWEEN '[%0]' AND '[%1]' and
---t1."Usage" in (52,60) and T3."ExpnsCode"=-1 AND
+T0."CANCELED" = 'N' and
+T0."DocDate" between 'Dataini' And 'Datafim' and t1."Usage" in (52,60) and T3."ExpnsCode"=-1 
 AND T3."RelateType"=1) x
-group by "SlpName", "Email", "SlpCode", "DocDate"</value>
+group by"SlpName", "Email", "SlpCode", "DocDate"</value>
+  </data>
+  <data name="Notas_Fiscais_SQL" xml:space="preserve">
+    <value>Select  
+'N' as "Selecionado",
+"SlpCode" as "Código",
+"SlpName" as "Nome do Vendedor",
+"Email" as "Email do vendedor",
+"DocDate" as "Data de geração",
+sum("LineTotal") as "Total",
+sum("IPI") as "IPI",
+sum("ICMSST") as "ICMS-ST",
+sum(("LineTotal" + isnull("IPI", 0) + isnull("ICMSST", 0))*("Com") )/100 as "Comissão"
+ from 
+ 
+ (
+
+SELECT  top 10 
+'NS' "Doc",
+T0."ObjType",
+T0."DocEntry", 
+T0."DocDate", 
+T0."DocDueDate", 
+T0."CardCode", 
+T0."CardName", 
+T0."SlpCode", 
+T2."SlpName",
+T2."Email",
+T0."Serial", 
+T1."ItemCode", 
+T1."Dscription", 
+T1."Quantity", 
+T1."Price", 
+T1."LineTotal"*(1 - (T0."DiscPrcnt"/100)) as "LineTotal", 
+T3."TaxSum" IPI,
+IsNULL(T4."TaxSum",0) ICMSST, 
+IsNULL(T1."U_FOC_Comissao",0) as "Com"
+
+FROM OINV T0 INNER JOIN INV1 T1 ON T0."DocEntry" = T1."DocEntry"
+             INNER JOIN INV4 T3 ON T0."DocEntry" = T3."DocEntry" AND T1."LineNum" = T3."LineNum" AND T3."staType" = 16
+             LEFT OUTER JOIN INV4 T4 ON T0."DocEntry" = T4."DocEntry" AND T1."LineNum" = T4."LineNum" AND T4."staType" = 13
+             INNER JOIN OSLP T2 ON T0."SlpCode" = T2."SlpCode"
+             
+WHERE
+T0."CANCELED" = 'N' AND
+T0."DocDate" between 'Dataini' And 'Datafim' and
+t1."Usage" in (52,60) AND
+T3."ExpnsCode"=-1 AND
+T3."RelateType"=1
+
+UNION ALL
+
+SELECT 
+'DS' Doc,
+T0."ObjType",
+T0."DocEntry", 
+T0."DocDate", 
+T0."DocDueDate", 
+T0."CardCode", 
+T0."CardName", 
+T0."SlpCode", 
+T2."SlpName",
+T2."Email",
+T0."Serial", 
+T1."ItemCode", 
+T1."Dscription", 
+T1."Quantity", 
+T1."Price", 
+T1."LineTotal" * (1 - (T0."DiscPrcnt"/100)) * (-1) as "LineTotal", 
+(T3."TaxSum")*(-1) IPI,
+IsNULL(T4."TaxSum",0) * -1 ICMSST,
+(IsNULL(T1."U_FOC_Comissao",0))
+
+FROM ORIN T0 INNER JOIN RIN1 T1 ON T0."DocEntry" = T1."DocEntry"
+             INNER JOIN RIN4 T3 ON T0."DocEntry" = T3."DocEntry" AND T1."LineNum" = T3."LineNum" AND T3."staType" = 16
+             LEFT OUTER JOIN RIN4 T4 ON T0."DocEntry" = T4."DocEntry" AND T1."LineNum" = T4."LineNum" AND T4."staType" = 13
+             INNER JOIN OSLP T2 ON T0."SlpCode" = T2."SlpCode"
+             
+WHERE
+T0."CANCELED" = 'N' and
+T0."DocDate" between 'Dataini' And 'Datafim' and t1."Usage" in (52,60) and T3."ExpnsCode"=-1 
+AND T3."RelateType"=1) x
+group by"SlpName", "Email", "SlpCode", "DocDate"</value>
   </data>
   <data name="Param_Email" xml:space="preserve">
     <value>SELECT TOP 1 * FROM "@FOC_EMAIL_PARAM"</value>

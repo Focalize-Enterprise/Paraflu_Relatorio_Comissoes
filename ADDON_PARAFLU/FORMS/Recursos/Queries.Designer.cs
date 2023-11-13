@@ -61,20 +61,22 @@ namespace ADDON_PARAFLU.FORMS.Recursos {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a Select
-        ///&apos;N&apos; as &apos;Selecionado&apos;,
-        ///&quot;SlpCode&quot; as &apos;Código&apos;,
-        ///&quot;SlpName&quot; as &apos;Nome do Vendedor&apos;,
-        ///&quot;Email&quot; as &apos;Email do vendedor&apos;,
-        ///&quot;DocDate&quot; as &apos;Data de geração&apos;,
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Select  
+        ///&apos;N&apos; as &quot;Selecionado&quot;,
+        ///&quot;SlpCode&quot; as &quot;Código&quot;,
+        ///&quot;SlpName&quot; as &quot;Nome do Vendedor&quot;,
+        ///&quot;Email&quot; as &quot;Email do vendedor&quot;,
+        ///&quot;DocDate&quot; as &quot;Data de geração&quot;,
         ///sum(&quot;LineTotal&quot;) as &quot;Total&quot;,
         ///sum(&quot;IPI&quot;) as &quot;IPI&quot;,
         ///sum(&quot;ICMSST&quot;) as &quot;ICMS-ST&quot;,
-        ///sum((&quot;LineTotal&quot; + isnull(&quot;IPI&quot;, 0) + isnull(&quot;ICMSST&quot;, 0))*(&quot;Com&quot;) )/100 as &apos;Comissão&apos;
-        /// from (
+        ///sum((&quot;LineTotal&quot; + ifnull(&quot;IPI&quot;, 0) + ifnull(&quot;ICMSST&quot;, 0))*(&quot;Com&quot;) )/100 as &quot;Comissão&quot;
+        /// from 
+        /// 
+        /// (
         ///
-        ///SELECT 
-        ///&apos;NS&apos; Doc,
+        ///SELECT  top 10 
+        ///&apos;NS&apos; &quot;Doc&quot;,
         ///T0.&quot;ObjType&quot;,
         ///T0.&quot;DocEntry&quot;, 
         ///T0.&quot;DocDate&quot;, 
@@ -85,12 +87,46 @@ namespace ADDON_PARAFLU.FORMS.Recursos {
         ///T2.&quot;SlpName&quot;,
         ///T2.&quot;Email&quot;,
         ///T0.&quot;Serial&quot;, 
-        ///T1.&quot;ItemCode&quot;, 
-        ///T1.&quot;D [o restante da cadeia de caracteres foi truncado]&quot;;.
+        ///T1.&quot;I [o restante da cadeia de caracteres foi truncado]&quot;;.
         /// </summary>
-        internal static string Notas_Fiscais {
+        internal static string Notas_Fiscais_HANA {
             get {
-                return ResourceManager.GetString("Notas_Fiscais", resourceCulture);
+                return ResourceManager.GetString("Notas_Fiscais_HANA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Select  
+        ///&apos;N&apos; as &quot;Selecionado&quot;,
+        ///&quot;SlpCode&quot; as &quot;Código&quot;,
+        ///&quot;SlpName&quot; as &quot;Nome do Vendedor&quot;,
+        ///&quot;Email&quot; as &quot;Email do vendedor&quot;,
+        ///&quot;DocDate&quot; as &quot;Data de geração&quot;,
+        ///sum(&quot;LineTotal&quot;) as &quot;Total&quot;,
+        ///sum(&quot;IPI&quot;) as &quot;IPI&quot;,
+        ///sum(&quot;ICMSST&quot;) as &quot;ICMS-ST&quot;,
+        ///sum((&quot;LineTotal&quot; + isnull(&quot;IPI&quot;, 0) + isnull(&quot;ICMSST&quot;, 0))*(&quot;Com&quot;) )/100 as &quot;Comissão&quot;
+        /// from 
+        /// 
+        /// (
+        ///
+        ///SELECT  top 10 
+        ///&apos;NS&apos; &quot;Doc&quot;,
+        ///T0.&quot;ObjType&quot;,
+        ///T0.&quot;DocEntry&quot;, 
+        ///T0.&quot;DocDate&quot;, 
+        ///T0.&quot;DocDueDate&quot;, 
+        ///T0.&quot;CardCode&quot;, 
+        ///T0.&quot;CardName&quot;, 
+        ///T0.&quot;SlpCode&quot;, 
+        ///T2.&quot;SlpName&quot;,
+        ///T2.&quot;Email&quot;,
+        ///T0.&quot;Serial&quot;, 
+        ///T1.&quot;I [o restante da cadeia de caracteres foi truncado]&quot;;.
+        /// </summary>
+        internal static string Notas_Fiscais_SQL {
+            get {
+                return ResourceManager.GetString("Notas_Fiscais_SQL", resourceCulture);
             }
         }
         
