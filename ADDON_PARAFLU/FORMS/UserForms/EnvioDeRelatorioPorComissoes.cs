@@ -85,6 +85,12 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                                         EnviaEmails();
                                     }
                                     break;
+                                case "Item_7":
+                                    {
+                                        MarcarDesmarcarTodos();
+                                    }
+                                    break;
+
                             }
                         }
                         break;
@@ -159,6 +165,35 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 }
             }
         }
+
+        private void MarcarDesmarcarTodos()
+        {
+            bool marcado = !((SAPbouiCOM.CheckBox)form.Items.Item("Item_7").Specific).Checked;
+            MarcarTodos(marcado);
+        }
+
+        private void MarcarTodos(bool marcado)
+        {
+            form.Freeze(true);
+            try
+            {
+                DataTable dt = form.DataSources.DataTables.Item("DT_0");
+                string valor = marcado ? "Y" : "N";
+                for (int row = 0; row < dt.Rows.Count; row++)
+                {
+                    dt.SetValue("Selecionado", row, valor);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                form.Freeze(false);
+            }
+        }
+
         private void AtualizaGrid()
         {
             form.Freeze(true);
@@ -173,11 +208,13 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 string query = "";
                 if (string.IsNullOrEmpty(dataini))
                 {
-                    SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Selecione um perido", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Warning);
+                    SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Selecione um perido inicial", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Warning);
                     return;
                 }
                 if (string.IsNullOrEmpty(datafim))
                 {
+                    SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Selecione um perido final", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Warning);
+                    return;
                 }
                 if (_api.Company.DbServerType != BoDataServerTypes.dst_HANADB)
                     query = Queries.Notas_Fiscais_SQL.Replace("Dataini", dataini).Replace("Datafim", datafim);

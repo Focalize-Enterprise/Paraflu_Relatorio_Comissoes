@@ -110,7 +110,7 @@ namespace ADDON_PARAFLU.FORMS.Recursos {
         /// 
         /// (
         ///
-        ///SELECT  top 10 
+        ///SELECT  top 10
         ///&apos;NS&apos; &quot;Doc&quot;,
         ///T0.&quot;ObjType&quot;,
         ///T0.&quot;DocEntry&quot;, 
@@ -122,7 +122,7 @@ namespace ADDON_PARAFLU.FORMS.Recursos {
         ///T2.&quot;SlpName&quot;,
         ///T2.&quot;Email&quot;,
         ///T0.&quot;Serial&quot;, 
-        ///T1.&quot;I [o restante da cadeia de caracteres foi truncado]&quot;;.
+        ///T1.&quot;It [o restante da cadeia de caracteres foi truncado]&quot;;.
         /// </summary>
         internal static string Notas_Fiscais_SQL {
             get {

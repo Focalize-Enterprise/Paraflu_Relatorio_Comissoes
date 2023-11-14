@@ -214,7 +214,7 @@ sum(("LineTotal" + isnull("IPI", 0) + isnull("ICMSST", 0))*("Com") )/100 as "Com
  
  (
 
-SELECT  top 10 
+SELECT  top 10
 'NS' "Doc",
 T0."ObjType",
 T0."DocEntry", 
@@ -236,16 +236,16 @@ IsNULL(T4."TaxSum",0) ICMSST,
 IsNULL(T1."U_FOC_Comissao",0) as "Com"
 
 FROM OINV T0 INNER JOIN INV1 T1 ON T0."DocEntry" = T1."DocEntry"
-             INNER JOIN INV4 T3 ON T0."DocEntry" = T3."DocEntry" AND T1."LineNum" = T3."LineNum" AND T3."staType" = 16
-             LEFT OUTER JOIN INV4 T4 ON T0."DocEntry" = T4."DocEntry" AND T1."LineNum" = T4."LineNum" AND T4."staType" = 13
-             INNER JOIN OSLP T2 ON T0."SlpCode" = T2."SlpCode"
+             LEFT JOIN INV4 T3 ON T0."DocEntry" = T3."DocEntry" AND T1."LineNum" = T3."LineNum" AND T3."staType" = 16
+             LEFT JOIN INV4 T4 ON T0."DocEntry" = T4."DocEntry" AND T1."LineNum" = T4."LineNum" AND T4."staType" = 13
+             LEFT JOIN OSLP T2 ON T0."SlpCode" = T2."SlpCode"
              
 WHERE
 T0."CANCELED" = 'N' AND
-T0."DocDate" between 'Dataini' And 'Datafim' and
-t1."Usage" in (52,60) AND
-T3."ExpnsCode"=-1 AND
-T3."RelateType"=1
+T0."DocDate" between 'Dataini' And 'Datafim'
+--AND t1."Usage" in (52,60) AND
+--T3."ExpnsCode"=-1 AND
+--T3."RelateType"=1
 
 UNION ALL
 
