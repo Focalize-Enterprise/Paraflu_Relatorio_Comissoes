@@ -8,10 +8,11 @@ using ADDON_PARAFLU.servicos.Interfaces;
 using ADDON_PARAFLU.FORMS.Recursos;
 using Microsoft.Extensions.DependencyInjection;
 using SAPbouiCOM;
-using ADDON_PARAFLU.Uteis;
 using System.Globalization;
 using ADDON_PARAFLU.Uteis.Interfaces;
 using SAPbobsCOM;
+using ADDON_PARAFLU.Services;
+using ADDON_PARAFLU.Uteis;
 
 namespace ADDON_PARAFLU.FORMS.UserForms
 {
@@ -32,7 +33,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
             _api = api;
             _email = email;
             _pdfs = pdfs;
-
+            _email.GetParamEmail();
             FormCreationParams cp = null;
             string xmlFormCode = Recursos.Recursos.EnvioComissões.ToString();
             try
@@ -235,12 +236,26 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 form.Freeze(false);
             }
         }
-
+        private (string user, string senha) GetDataForBD()
+        {
+            Recordset recordset = (Recordset)_api.Company.GetBusinessObject(BoObjectTypes.BoRecordset);
+            string query = @"SELECT U_User, U_Pass FROM ""@FOC_DB_CONF"" WHERE Code = '1'";
+            recordset.DoQuery(query);
+            if (recordset.RecordCount > 0)
+            {
+                return (Security.Decrypt(recordset.Fields.Item(0).Value.ToString()), Security.Decrypt(recordset.Fields.Item(1).Value.ToString()));
+            }
+            return (string.Empty, string.Empty);
+        }
         private void EnviaEmails()
-
         {
             form.Freeze(true);
+            Recordset recordset = (Recordset)_api.Company.GetBusinessObject(BoObjectTypes.BoRecordset);
+            string query = @"SELECT Name FROM ""@FOC_EMAIL_BODY"" WHERE Code = '1'";
+            recordset.DoQuery(query);
+
             DataTable dt = form.DataSources.DataTables.Item("DT_0");
+            (string user, string senha) = GetDataForBD();
             try
             {
                 form.Freeze(true);
@@ -248,10 +263,9 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 for (int index = 0; index < values.Length; index++)
                 {
                     Vendedores vendedores = values[index];
+                    string body = recordset.Fields.Item("Name").Value.ToString();
                     string reportPath = @$"{System.Windows.Forms.Application.StartupPath}ReportComissões.rpt";
-                    string user = "sa";
                     string caminho = "";
-                    string senha = "@B1Admin123#";
                     string cardCode = vendedores.Code;
                     string periodo2 = ((EditText)this.form.Items.Item("Item_4").Specific).Value;
                     string periodo1 = ((EditText)this.form.Items.Item("Item_3").Specific).Value;
@@ -259,12 +273,9 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                     periodo2 = periodo2.Substring(0, 4) + "-" + periodo2.Substring(4, 2) + "-" + periodo2.Substring(6, 2);
                     if(string.IsNullOrEmpty(caminho))
                     caminho = $"C:\\Temp\\{cardCode}.pdf";
-                    //string body = ((SAPbouiCOM.EditText)form.Items.Item("ETTX_EM").Specific).Value;
                     string caminhoPdf = _pdfs.GeraPDF(periodo1, periodo2, cardCode, user, senha, reportPath, caminho);
                     string[] anexos = new string[] { caminhoPdf };
-
-                    _email.EnviarPorEmail(vendedores.E_Mail.Split('@').First(), vendedores.E_Mail, anexos);
-
+                    _email.EnviarPorEmail(vendedores.E_Mail.Split('@').First(), vendedores.E_Mail, anexos, body);
                     SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Email enviado com sucesso!", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Success);
                 }
             }

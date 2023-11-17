@@ -14,7 +14,6 @@ namespace CrystalReport
         {
             string info = args[0];
             args = info.Split(';');
-            MessageBox.Show(info);
             ReportData data = new ReportData()
             {
                 periodo1 = args[0],

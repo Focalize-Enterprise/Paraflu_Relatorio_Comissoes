@@ -35,27 +35,26 @@ namespace ADDON_PARAFLU.Uteis
             if (recordset.RecordCount < 1)
                 throw new Exception("Não há nenhum valor parametrizado para o Email");
 
-            E_mail = recordset.Fields.Item("U_Email").Value.ToString();
-            Host = recordset.Fields.Item("U_host").Value.ToString();
-            Name = recordset.Fields.Item("Name").Value.ToString();
-            Senha = recordset.Fields.Item("U_senha").Value.ToString();
-            Porta = (int)recordset.Fields.Item("U_porta").Value;
+                E_mail = recordset.Fields.Item("U_Email").Value.ToString();
+                Host = recordset.Fields.Item("U_host").Value.ToString();
+                Name = recordset.Fields.Item("Name").Value.ToString();
+                Senha = recordset.Fields.Item("U_senha").Value.ToString();
+                Porta = (int)recordset.Fields.Item("U_porta").Value;
         }
 
-        public void EnviarPorEmail(string destinationName, string destinationEmail, string[] anexos)
+        public void EnviarPorEmail(string destinationName, string destinationEmail, string[] anexos, string body)
         {
-            SmtpClient smtp = new SmtpClient("smtp.office365.com", 587);
+            SmtpClient smtp = new SmtpClient(Host, Porta);
             var mimeMessage = new MimeMessage();
             var mailMessage = new MailMessage();
-
             try
             {
                 // como a gente vai usar isso nos dois formulários é melhor colocar isso em uma outra classe 
-                mimeMessage.From.Add(new MailboxAddress("Kaled", "kaled@sapb1.com.br"));
+                mimeMessage.From.Add(new MailboxAddress(Name, E_mail));
                 mimeMessage.To.Add(new MailboxAddress(destinationName, destinationEmail));
                 mimeMessage.Subject = "Comissões";
                 var builder = new BodyBuilder();
-                builder.HtmlBody = "Teste";
+                builder.HtmlBody = body;
                 mimeMessage.Body = builder.ToMessageBody();
                 // Convert the MimeMessage to a MailMessage
                 var headers = mimeMessage.Headers;
@@ -77,7 +76,7 @@ namespace ADDON_PARAFLU.Uteis
                 smtp.UseDefaultCredentials = false;
                 smtp.EnableSsl = true;
                 smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
-                smtp.Credentials = new NetworkCredential("Kaled@sapb1.com.br", "Tricolorg@");
+                smtp.Credentials = new NetworkCredential(E_mail, Senha);
                 smtp.Send(mailMessage);
             }
             catch (Exception ex)
@@ -88,9 +87,9 @@ namespace ADDON_PARAFLU.Uteis
             {
                 // descarta o socket
                 smtp.Dispose();
+                mailMessage.Attachments.Dispose();
                 mimeMessage.Dispose();
                 mailMessage.Dispose();
-                mailMessage.Attachments.Dispose();
             }
         }
     }
