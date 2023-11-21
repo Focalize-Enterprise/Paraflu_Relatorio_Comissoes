@@ -8,10 +8,11 @@ using ADDON_PARAFLU.servicos.Interfaces;
 using ADDON_PARAFLU.FORMS.Recursos;
 using Microsoft.Extensions.DependencyInjection;
 using SAPbouiCOM;
-using ADDON_PARAFLU.Uteis;
 using System.Globalization;
 using ADDON_PARAFLU.Uteis.Interfaces;
 using SAPbobsCOM;
+using ADDON_PARAFLU.Services;
+using ADDON_PARAFLU.Uteis;
 
 namespace ADDON_PARAFLU.FORMS.UserForms
 {
@@ -32,7 +33,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
             _api = api;
             _email = email;
             _pdfs = pdfs;
-
+            _email.GetParamEmail();
             FormCreationParams cp = null;
             string xmlFormCode = Recursos.Recursos.EnvioComissões.ToString();
             try
@@ -85,6 +86,12 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                                         EnviaEmails();
                                     }
                                     break;
+                                case "Item_7":
+                                    {
+                                        MarcarDesmarcarTodos();
+                                    }
+                                    break;
+
                             }
                         }
                         break;
@@ -109,6 +116,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                                     {
                                         string vendedor = grid.DataTable.Columns.Item("Código").Cells.Item(row).Value.ToString();
                                         string email = grid.DataTable.Columns.Item("Email do vendedor").Cells.Item(row).Value.ToString();
+                                        string name = grid.DataTable.Columns.Item("Nome do Vendedor").Cells.Item(row).Value.ToString();
 
                                         string valor = dt.GetValue("Comissão", row).ToString();
                                         double val = 0;
@@ -124,6 +132,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                                         {
                                             Code = vendedor,
                                             E_Mail = email,
+                                            Name = name,
                                         };
 
                                         vendedores.Add(vendedor, rep);
@@ -135,6 +144,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                                     {
                                         string vendedor = grid.DataTable.Columns.Item("Código").Cells.Item(row).Value.ToString();
                                         string email = grid.DataTable.Columns.Item("Email do vendedor").Cells.Item(row).Value.ToString();
+                                        string name = grid.DataTable.Columns.Item("Nome do Vendedor").Cells.Item(row).Value.ToString();
 
                                         if (vendedores.TryGetValue(vendedor, out Vendedores value))
                                         {
@@ -159,6 +169,35 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 }
             }
         }
+
+        private void MarcarDesmarcarTodos()
+        {
+            bool marcado = !((SAPbouiCOM.CheckBox)form.Items.Item("Item_7").Specific).Checked;
+            MarcarTodos(marcado);
+        }
+
+        private void MarcarTodos(bool marcado)
+        {
+            form.Freeze(true);
+            try
+            {
+                DataTable dt = form.DataSources.DataTables.Item("DT_0");
+                string valor = marcado ? "Y" : "N";
+                for (int row = 0; row < dt.Rows.Count; row++)
+                {
+                    dt.SetValue("Selecionado", row, valor);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                form.Freeze(false);
+            }
+        }
+
         private void AtualizaGrid()
         {
             form.Freeze(true);
@@ -173,11 +212,13 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 string query = "";
                 if (string.IsNullOrEmpty(dataini))
                 {
-                    SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Selecione um perido", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Warning);
+                    SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Selecione um perido inicial", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Warning);
                     return;
                 }
                 if (string.IsNullOrEmpty(datafim))
                 {
+                    SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Selecione um perido final", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Warning);
+                    return;
                 }
                 if (_api.Company.DbServerType != BoDataServerTypes.dst_HANADB)
                     query = Queries.Notas_Fiscais_SQL.Replace("Dataini", dataini).Replace("Datafim", datafim);
@@ -198,12 +239,25 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 form.Freeze(false);
             }
         }
-
+        private (string user, string senha, string past) GetDataForBD()
+        {
+            Recordset recordset = (Recordset)_api.Company.GetBusinessObject(BoObjectTypes.BoRecordset);
+            string query = @"SELECT U_User, U_Pass, U_Past FROM ""@FOC_DB_CONF"" WHERE Code = '1'";
+            recordset.DoQuery(query);
+            if (recordset.RecordCount > 0)
+            {
+                return (Security.Decrypt(recordset.Fields.Item(0).Value.ToString()), Security.Decrypt(recordset.Fields.Item(1).Value.ToString()), recordset.Fields.Item(2).Value.ToString());
+            }
+            return (string.Empty, string.Empty, string.Empty);
+        }
         private void EnviaEmails()
-
         {
             form.Freeze(true);
+            Recordset recordset = (Recordset)_api.Company.GetBusinessObject(BoObjectTypes.BoRecordset);
+            string query = @"SELECT Name FROM ""@FOC_EMAIL_BODY"" WHERE Code = '1'";
+            recordset.DoQuery(query);
             DataTable dt = form.DataSources.DataTables.Item("DT_0");
+            (string user, string senha, string past) = GetDataForBD();
             try
             {
                 form.Freeze(true);
@@ -211,23 +265,20 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 for (int index = 0; index < values.Length; index++)
                 {
                     Vendedores vendedores = values[index];
+                    string body = recordset.Fields.Item("Name").Value.ToString();
                     string reportPath = @$"{System.Windows.Forms.Application.StartupPath}ReportComissões.rpt";
-                    string user = "sa";
                     string caminho = "";
-                    string senha = "@B1Admin123#";
                     string cardCode = vendedores.Code;
+                    string slpName = vendedores.Name;
                     string periodo2 = ((EditText)this.form.Items.Item("Item_4").Specific).Value;
                     string periodo1 = ((EditText)this.form.Items.Item("Item_3").Specific).Value;
                     periodo1 = periodo1.Substring(0, 4) + "-" + periodo1.Substring(4, 2) + "-" + periodo1.Substring(6, 2);
                     periodo2 = periodo2.Substring(0, 4) + "-" + periodo2.Substring(4, 2) + "-" + periodo2.Substring(6, 2);
                     if(string.IsNullOrEmpty(caminho))
-                    caminho = $"C:\\Temp\\{cardCode}.pdf";
-                    //string body = ((SAPbouiCOM.EditText)form.Items.Item("ETTX_EM").Specific).Value;
+                    caminho = $"C:\\{past}\\{slpName}_{periodo1}_{periodo2}.pdf";
                     string caminhoPdf = _pdfs.GeraPDF(periodo1, periodo2, cardCode, user, senha, reportPath, caminho);
                     string[] anexos = new string[] { caminhoPdf };
-
-                    _email.EnviarPorEmail(vendedores.E_Mail.Split('@').First(), vendedores.E_Mail, anexos);
-
+                    _email.EnviarPorEmail(vendedores.E_Mail.Split('@').First(), vendedores.E_Mail, anexos, body);
                     SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Email enviado com sucesso!", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Success);
                 }
             }

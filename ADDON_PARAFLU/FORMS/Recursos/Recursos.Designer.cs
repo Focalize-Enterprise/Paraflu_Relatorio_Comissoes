@@ -65,13 +65,29 @@ namespace ADDON_PARAFLU.FORMS.Recursos {
         ///&lt;Application&gt;
         ///  &lt;forms&gt;
         ///    &lt;action type=&quot;add&quot;&gt;
-        ///      &lt;form appformnumber=&quot;-1&quot; FormType=&quot;-1&quot; type=&quot;0&quot; BorderStyle=&quot;0&quot; uid=&quot;&quot; title=&quot;New Form 1&quot; visible=&quot;0&quot; default_button=&quot;&quot; pane=&quot;1&quot; color=&quot;0&quot; left=&quot;0&quot; top=&quot;0&quot; width=&quot;869&quot; height=&quot;489&quot; client_width=&quot;&quot; client_height=&quot;&quot; AutoManaged=&quot;0&quot; SupportedModes=&quot;15&quot; ObjectType=&quot;&quot; mode=&quot;1&quot;&gt;
+        ///      &lt;form appformnumber=&quot;-1&quot; FormType=&quot;-1&quot; type=&quot;0&quot; BorderStyle=&quot;0&quot; uid=&quot;&quot; title=&quot;Dados do Banco&quot; visible=&quot;0&quot; default_button=&quot;&quot; pane=&quot;1&quot; color=&quot;0&quot; left=&quot;0&quot; top=&quot;0&quot; width=&quot;300&quot; height=&quot;280&quot; client_width=&quot;&quot; client_height=&quot;&quot; AutoManaged=&quot;0&quot; SupportedModes=&quot;15&quot; ObjectType=&quot;&quot; mode=&quot;1&quot;&gt;
         ///        &lt;datasources&gt;
         ///          &lt;DataTables /&gt;
         ///          &lt;dbdatasources&gt;
         ///            &lt;action type=&quot;add&quot; /&gt;
-        ///          &lt;/dbdatasources&gt;
-        /// [o restante da cadeia de caracteres foi truncado]&quot;;.
+        ///          &lt;/dbdatasource [o restante da cadeia de caracteres foi truncado]&quot;;.
+        /// </summary>
+        internal static string DBCredential {
+            get {
+                return ResourceManager.GetString("DBCredential", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-16&quot;?&gt;
+        ///&lt;Application&gt;
+        ///  &lt;forms&gt;
+        ///    &lt;action type=&quot;add&quot;&gt;
+        ///      &lt;form appformnumber=&quot;-1&quot; FormType=&quot;-1&quot; type=&quot;0&quot; BorderStyle=&quot;0&quot; uid=&quot;&quot; title=&quot;Envio de Relatório de Comissões por Email&quot; visible=&quot;0&quot; default_button=&quot;&quot; pane=&quot;1&quot; color=&quot;0&quot; left=&quot;227&quot; top=&quot;37&quot; width=&quot;869&quot; height=&quot;489&quot; client_width=&quot;&quot; client_height=&quot;&quot; AutoManaged=&quot;0&quot; SupportedModes=&quot;15&quot; ObjectType=&quot;&quot; mode=&quot;1&quot;&gt;
+        ///        &lt;datasources&gt;
+        ///          &lt;DataTables&gt;
+        ///            &lt;DataTable Uid=&quot;DT_0&quot;&gt;
+        ///              &lt;Columns [o restante da cadeia de caracteres foi truncado]&quot;;.
         /// </summary>
         internal static string EnvioComissões {
             get {

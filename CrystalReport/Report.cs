@@ -55,11 +55,14 @@ namespace CrystalReport
             try
             {
                 GenerateReport();
-                this.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message + "\n" + ex.InnerException);
+            }
+            finally
+            {
+                this.Close();
             }
         }
     }

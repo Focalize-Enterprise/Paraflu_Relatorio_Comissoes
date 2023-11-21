@@ -1,5 +1,6 @@
 using ADDON_PARAFLU.DIAPI;
 using ADDON_PARAFLU.DIAPI.Interfaces;
+using ADDON_PARAFLU.Forms.UserForms;
 using ADDON_PARAFLU.FORMS.UserForms;
 using ADDON_PARAFLU.servicos.Interfaces;
 using ADDON_PARAFLU.Uteis;
@@ -37,6 +38,7 @@ namespace ADDON_PARAFLU
                     services.AddTransient<IPDFs, PDFs>();
                     // formularios abaixo
                     services.AddTransient<EnvioDeRelatorioPorComissoes>();
+                    services.AddTransient<DbCredentials>();
                 })
                 .Build();
 

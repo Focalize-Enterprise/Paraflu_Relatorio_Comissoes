@@ -3,6 +3,7 @@ using System;
 using Microsoft.Extensions.DependencyInjection;
 using ADDON_PARAFLU.FORMS.UserForms;
 using Application = SAPbouiCOM.Framework.Application;
+using ADDON_PARAFLU.Forms.UserForms;
 
 namespace ADDON_PARAFLU
 {
@@ -49,6 +50,11 @@ namespace ADDON_PARAFLU
                 oCreationPackage.String = " Vendedores - Envio de Relatórios";
                 oMenus.AddEx(oCreationPackage);
 
+                oCreationPackage.Type = SAPbouiCOM.BoMenuType.mt_STRING;
+                oCreationPackage.UniqueID = "DbCredentials";
+                oCreationPackage.String = " Configuração de dados do banco";
+                oMenus.AddEx(oCreationPackage);
+
             }
             catch (Exception)
             { //  Menu already exists
@@ -75,6 +81,11 @@ namespace ADDON_PARAFLU
                         case "EnvioComissoes_Form":
                             {
                                 _ = _serviceProvider.GetRequiredService<EnvioDeRelatorioPorComissoes>();
+                            }
+                            break;
+                        case "DbCredentials":
+                            {
+                                _ = _serviceProvider.GetRequiredService<DbCredentials>();
                             }
                             break;
                     }
