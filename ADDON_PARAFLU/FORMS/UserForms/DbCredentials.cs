@@ -43,7 +43,7 @@ namespace ADDON_PARAFLU.Forms.UserForms
         private void CustomInitialize()
         {
             Recordset recordset = (Recordset)_api.Company.GetBusinessObject(BoObjectTypes.BoRecordset);
-            string query = @"SELECT U_User, U_Pass, U_Past FROM ""@FOC_DB_CONF"" WHERE Code = '1'";
+            string query = @"SELECT ""U_User"", ""U_Pass"", ""U_Past"" FROM ""@FOC_DB_CONF"" WHERE ""Code"" = '1'";
             recordset.DoQuery(query);
             if(recordset.RecordCount > 0)
             {
