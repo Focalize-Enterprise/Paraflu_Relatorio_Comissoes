@@ -10,11 +10,12 @@ namespace ADDON_PARAFLU.Uteis
     {
         public string Code { get; set; }
         public string E_Mail { get; set; }
-
+        public string Name { get; set; }
         public Vendedores()
         {
             Code = string.Empty;
             E_Mail = string.Empty;
+            Name = string.Empty;
         }
     }
 }

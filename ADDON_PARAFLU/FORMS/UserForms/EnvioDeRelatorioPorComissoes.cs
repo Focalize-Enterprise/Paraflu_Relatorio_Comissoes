@@ -116,6 +116,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                                     {
                                         string vendedor = grid.DataTable.Columns.Item("Código").Cells.Item(row).Value.ToString();
                                         string email = grid.DataTable.Columns.Item("Email do vendedor").Cells.Item(row).Value.ToString();
+                                        string name = grid.DataTable.Columns.Item("Nome do Vendedor").Cells.Item(row).Value.ToString();
 
                                         string valor = dt.GetValue("Comissão", row).ToString();
                                         double val = 0;
@@ -131,6 +132,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                                         {
                                             Code = vendedor,
                                             E_Mail = email,
+                                            Name = name,
                                         };
 
                                         vendedores.Add(vendedor, rep);
@@ -142,6 +144,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                                     {
                                         string vendedor = grid.DataTable.Columns.Item("Código").Cells.Item(row).Value.ToString();
                                         string email = grid.DataTable.Columns.Item("Email do vendedor").Cells.Item(row).Value.ToString();
+                                        string name = grid.DataTable.Columns.Item("Nome do Vendedor").Cells.Item(row).Value.ToString();
 
                                         if (vendedores.TryGetValue(vendedor, out Vendedores value))
                                         {
@@ -236,16 +239,16 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 form.Freeze(false);
             }
         }
-        private (string user, string senha) GetDataForBD()
+        private (string user, string senha, string past) GetDataForBD()
         {
             Recordset recordset = (Recordset)_api.Company.GetBusinessObject(BoObjectTypes.BoRecordset);
-            string query = @"SELECT U_User, U_Pass FROM ""@FOC_DB_CONF"" WHERE Code = '1'";
+            string query = @"SELECT U_User, U_Pass, U_Past FROM ""@FOC_DB_CONF"" WHERE Code = '1'";
             recordset.DoQuery(query);
             if (recordset.RecordCount > 0)
             {
-                return (Security.Decrypt(recordset.Fields.Item(0).Value.ToString()), Security.Decrypt(recordset.Fields.Item(1).Value.ToString()));
+                return (Security.Decrypt(recordset.Fields.Item(0).Value.ToString()), Security.Decrypt(recordset.Fields.Item(1).Value.ToString()), recordset.Fields.Item(2).Value.ToString());
             }
-            return (string.Empty, string.Empty);
+            return (string.Empty, string.Empty, string.Empty);
         }
         private void EnviaEmails()
         {
@@ -253,9 +256,8 @@ namespace ADDON_PARAFLU.FORMS.UserForms
             Recordset recordset = (Recordset)_api.Company.GetBusinessObject(BoObjectTypes.BoRecordset);
             string query = @"SELECT Name FROM ""@FOC_EMAIL_BODY"" WHERE Code = '1'";
             recordset.DoQuery(query);
-
             DataTable dt = form.DataSources.DataTables.Item("DT_0");
-            (string user, string senha) = GetDataForBD();
+            (string user, string senha, string past) = GetDataForBD();
             try
             {
                 form.Freeze(true);
@@ -267,12 +269,13 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                     string reportPath = @$"{System.Windows.Forms.Application.StartupPath}ReportComissões.rpt";
                     string caminho = "";
                     string cardCode = vendedores.Code;
+                    string slpName = vendedores.Name;
                     string periodo2 = ((EditText)this.form.Items.Item("Item_4").Specific).Value;
                     string periodo1 = ((EditText)this.form.Items.Item("Item_3").Specific).Value;
                     periodo1 = periodo1.Substring(0, 4) + "-" + periodo1.Substring(4, 2) + "-" + periodo1.Substring(6, 2);
                     periodo2 = periodo2.Substring(0, 4) + "-" + periodo2.Substring(4, 2) + "-" + periodo2.Substring(6, 2);
                     if(string.IsNullOrEmpty(caminho))
-                    caminho = $"C:\\Temp\\{cardCode}.pdf";
+                    caminho = $"C:\\{past}\\{slpName}_{periodo1}_{periodo2}.pdf";
                     string caminhoPdf = _pdfs.GeraPDF(periodo1, periodo2, cardCode, user, senha, reportPath, caminho);
                     string[] anexos = new string[] { caminhoPdf };
                     _email.EnviarPorEmail(vendedores.E_Mail.Split('@').First(), vendedores.E_Mail, anexos, body);

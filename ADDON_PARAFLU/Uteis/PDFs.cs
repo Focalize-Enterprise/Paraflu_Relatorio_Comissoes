@@ -46,18 +46,5 @@ namespace ADDON_PARAFLU.Uteis
 
             return sucess ? pdfPath : "";
         }
-
-        private (string user, string senha) GetDataForBD()
-        {
-            Recordset recordset = (Recordset)_api.Company.GetBusinessObject(BoObjectTypes.BoRecordset);
-            string query = @"SELECT U_User, U_Pass FROM ""@FOC_DB_CONF"" WHERE Code = '1'";
-            recordset.DoQuery(query);
-            if (recordset.RecordCount > 0)
-            {
-                //return (Security.Decrypt(recordset.Fields.Item(0).Value.ToString()), Security.Decrypt(recordset.Fields.Item(1).Value.ToString()));
-            }
-
-            return (string.Empty, string.Empty);
-        }
     }
 }

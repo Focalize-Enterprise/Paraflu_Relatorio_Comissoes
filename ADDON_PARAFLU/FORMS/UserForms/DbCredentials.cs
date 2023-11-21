@@ -44,12 +44,13 @@ namespace ADDON_PARAFLU.Forms.UserForms
         private void CustomInitialize()
         {
             Recordset recordset = (Recordset)_api.Company.GetBusinessObject(BoObjectTypes.BoRecordset);
-            string query = @"SELECT U_User, U_Pass FROM ""@FOC_DB_CONF"" WHERE Code = '1'";
+            string query = @"SELECT U_User, U_Pass, U_Past FROM ""@FOC_DB_CONF"" WHERE Code = '1'";
             recordset.DoQuery(query);
             if(recordset.RecordCount > 0)
             {
                 ((EditText)form.Items.Item("Item_0").Specific).Value = Security.Decrypt(recordset.Fields.Item(0).Value.ToString());
                 ((EditText)form.Items.Item("Item_1").Specific).Value = Security.Decrypt(recordset.Fields.Item(1).Value.ToString());
+                ((EditText)form.Items.Item("Item_3").Specific).Value = Security.Decrypt(recordset.Fields.Item(2).Value.ToString());
             }
 
             Framework.Application.SBO_Application.ItemEvent += SBO_Application_ItemEvent;
@@ -70,7 +71,8 @@ namespace ADDON_PARAFLU.Forms.UserForms
                 {
                     userTable.UserFields.Fields.Item("U_User").Value = Security.Encrypt(((EditText)form.Items.Item("Item_0").Specific).Value);
                     userTable.UserFields.Fields.Item("U_Pass").Value = Security.Encrypt(((EditText)form.Items.Item("Item_1").Specific).Value);
-                    if(userTable.Update() != 0)
+                    userTable.UserFields.Fields.Item("U_Past").Value = ((EditText)form.Items.Item("Item_3").Specific).Value;
+                    if (userTable.Update() != 0)
                     {
                         Framework.Application.SBO_Application.StatusBar.SetText($"Erro ao tentar atualizar os dados: {_api.Company.GetLastErrorDescription()}");
                         BubbleEvent = false;
@@ -82,6 +84,7 @@ namespace ADDON_PARAFLU.Forms.UserForms
                     userTable.Name = "Conf";
                     userTable.UserFields.Fields.Item("U_User").Value = Security.Encrypt(((EditText)form.Items.Item("Item_0").Specific).Value);
                     userTable.UserFields.Fields.Item("U_Pass").Value = Security.Encrypt(((EditText)form.Items.Item("Item_1").Specific).Value);
+                    userTable.UserFields.Fields.Item("U_Past").Value = ((EditText)form.Items.Item("Item_2").Specific).Value;
                     if (userTable.Add() != 0)
                     {
                         Framework.Application.SBO_Application.StatusBar.SetText($"Erro ao tentar adicionar os dados: {_api.Company.GetLastErrorDescription()}");
