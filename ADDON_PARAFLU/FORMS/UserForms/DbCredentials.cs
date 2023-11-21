@@ -38,7 +38,6 @@ namespace ADDON_PARAFLU.Forms.UserForms
                     form.Visible = true;
                 }
             }
-
         }
 
         private void CustomInitialize()
