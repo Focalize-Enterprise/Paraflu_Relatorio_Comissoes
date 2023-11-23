@@ -120,9 +120,7 @@ namespace ADDON_PARAFLU.FORMS.Recursos {
         ///T0.&quot;CardName&quot;, 
         ///T0.&quot;SlpCode&quot;, 
         ///T2.&quot;SlpName&quot;,
-        ///T2.&quot;Email&quot;,
-        ///T0.&quot;Serial&quot;, 
-        ///T1.&quot;It [o restante da cadeia de caracteres foi truncado]&quot;;.
+        ///T2.&quot;Emai [o restante da cadeia de caracteres foi truncado]&quot;;.
         /// </summary>
         internal static string Notas_Fiscais_SQL {
             get {

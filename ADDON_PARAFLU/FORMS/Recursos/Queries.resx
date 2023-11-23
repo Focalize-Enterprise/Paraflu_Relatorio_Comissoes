@@ -279,7 +279,8 @@ WHERE
 T0."CANCELED" = 'N' and
 T0."DocDate" between 'Dataini' And 'Datafim' and t1."Usage" in (52,60) and T3."ExpnsCode"=-1 
 AND T3."RelateType"=1) x
-group by"SlpName", "Email", "SlpCode", "DocDate"</value>
+group by"SlpName", "Email", "SlpCode", "DocDate"
+Order by "SlpName"</value>
   </data>
   <data name="Param_Email" xml:space="preserve">
     <value>SELECT TOP 1 * FROM "@FOC_EMAIL_PARAM"</value>

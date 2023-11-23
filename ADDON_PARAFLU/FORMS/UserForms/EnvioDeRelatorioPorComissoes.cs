@@ -203,6 +203,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
             form.Freeze(true);
             try
             {
+                SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Pesquisando dados...", BoMessageTime.bmt_Medium, BoStatusBarMessageType.smt_Warning);
                 DataTable dt = form.DataSources.DataTables.Item("DT_0");
                 Grid grid = (Grid)form.Items.Item("Item_6").Specific;
                 string dataini = ((EditText)this.form.Items.Item("Item_3").Specific).Value;
@@ -236,13 +237,14 @@ namespace ADDON_PARAFLU.FORMS.UserForms
             }
             finally
             {
+                SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Dados encontrados...", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Success);
                 form.Freeze(false);
             }
         }
         private (string user, string senha, string past) GetDataForBD()
         {
             Recordset recordset = (Recordset)_api.Company.GetBusinessObject(BoObjectTypes.BoRecordset);
-            string query = @"SELECT U_User, U_Pass, U_Past FROM ""@FOC_DB_CONF"" WHERE Code = '1'";
+            string query = @"SELECT ""U_User"", ""U_Pass"", ""U_Past"" FROM ""@FOC_DB_CONF"" WHERE ""Code"" = '1'";
             recordset.DoQuery(query);
             if (recordset.RecordCount > 0)
             {
@@ -254,7 +256,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
         {
             form.Freeze(true);
             Recordset recordset = (Recordset)_api.Company.GetBusinessObject(BoObjectTypes.BoRecordset);
-            string query = @"SELECT Name FROM ""@FOC_EMAIL_BODY"" WHERE Code = '1'";
+            string query = @"SELECT ""U_Body"" FROM ""@FOC_EMAIL_PARAM"" WHERE ""Code"" = '1'";
             recordset.DoQuery(query);
             DataTable dt = form.DataSources.DataTables.Item("DT_0");
             (string user, string senha, string past) = GetDataForBD();
@@ -265,7 +267,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 for (int index = 0; index < values.Length; index++)
                 {
                     Vendedores vendedores = values[index];
-                    string body = recordset.Fields.Item("Name").Value.ToString();
+                    string body = recordset.Fields.Item("U_Body").Value.ToString();
                     string reportPath = @$"{System.Windows.Forms.Application.StartupPath}ReportComissões.rpt";
                     string caminho = "";
                     string cardCode = vendedores.Code;
@@ -275,11 +277,11 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                     periodo1 = periodo1.Substring(0, 4) + "-" + periodo1.Substring(4, 2) + "-" + periodo1.Substring(6, 2);
                     periodo2 = periodo2.Substring(0, 4) + "-" + periodo2.Substring(4, 2) + "-" + periodo2.Substring(6, 2);
                     if(string.IsNullOrEmpty(caminho))
-                    caminho = $"C:\\{past}\\{slpName}_{periodo1}_{periodo2}.pdf";
+                    caminho = $"{past}\\{slpName}_{periodo1}_{periodo2}.pdf";
                     string caminhoPdf = _pdfs.GeraPDF(periodo1, periodo2, cardCode, user, senha, reportPath, caminho);
+                    SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Enviando Email...", BoMessageTime.bmt_Medium, BoStatusBarMessageType.smt_Warning);
                     string[] anexos = new string[] { caminhoPdf };
                     _email.EnviarPorEmail(vendedores.E_Mail.Split('@').First(), vendedores.E_Mail, anexos, body);
-                    SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Email enviado com sucesso!", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Success);
                 }
             }
             catch (Exception ex)
@@ -288,6 +290,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
             }
             finally
             {
+                SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Email enviado com sucesso!", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Success);
                 form.Freeze(false);
             }
         }

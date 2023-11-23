@@ -43,13 +43,21 @@ namespace ADDON_PARAFLU.Forms.UserForms
         private void CustomInitialize()
         {
             Recordset recordset = (Recordset)_api.Company.GetBusinessObject(BoObjectTypes.BoRecordset);
+            Recordset recordset1 = (Recordset)_api.Company.GetBusinessObject(BoObjectTypes.BoRecordset);
             string query = @"SELECT ""U_User"", ""U_Pass"", ""U_Past"" FROM ""@FOC_DB_CONF"" WHERE ""Code"" = '1'";
+            string query1 = @"SELECT ""U_Email"", ""U_senha"" FROM ""@FOC_EMAIL_PARAM"" WHERE ""Code"" = '1'";
             recordset.DoQuery(query);
-            if(recordset.RecordCount > 0)
+            recordset1.DoQuery(query1);
+            if (recordset.RecordCount > 0)
             {
-                ((EditText)form.Items.Item("Item_0").Specific).Value = Security.Decrypt(recordset.Fields.Item(0).Value.ToString());
+                ((EditText)form.Items.Item("Item_0").Specific).Value = recordset.Fields.Item(0).Value.ToString();
                 ((EditText)form.Items.Item("Item_1").Specific).Value = Security.Decrypt(recordset.Fields.Item(1).Value.ToString());
-                ((EditText)form.Items.Item("Item_3").Specific).Value = Security.Decrypt(recordset.Fields.Item(2).Value.ToString());
+                ((EditText)form.Items.Item("Item_3").Specific).Value = recordset.Fields.Item(2).Value.ToString();
+            }
+            if (recordset1.RecordCount > 0)
+            {
+                ((EditText)form.Items.Item("Item_11").Specific).Value = recordset1.Fields.Item(0).Value.ToString();
+                ((EditText)form.Items.Item("Item_12").Specific).Value = Security.Decrypt(recordset1.Fields.Item(1).Value.ToString());
             }
 
             Framework.Application.SBO_Application.ItemEvent += SBO_Application_ItemEvent;
@@ -60,36 +68,68 @@ namespace ADDON_PARAFLU.Forms.UserForms
             BubbleEvent = true;
             if (FormUID != form.UniqueID)
                 return;
-
-            if(pVal.EventType == BoEventTypes.et_FORM_CLOSE && pVal.BeforeAction)
-                Framework.Application.SBO_Application.ItemEvent -= SBO_Application_ItemEvent;
-            if(pVal.EventType == BoEventTypes.et_ITEM_PRESSED && pVal.BeforeAction && pVal.ItemUID == "1")
+            try
             {
-                UserTable userTable = _api.Company.UserTables.Item("FOC_DB_CONF");
-                if (userTable.GetByKey("1"))
+
+                if(pVal.EventType == BoEventTypes.et_FORM_CLOSE && pVal.BeforeAction)
+                    Framework.Application.SBO_Application.ItemEvent -= SBO_Application_ItemEvent;
+                if(pVal.EventType == BoEventTypes.et_ITEM_PRESSED && pVal.BeforeAction && pVal.ItemUID == "1")
                 {
-                    userTable.UserFields.Fields.Item("U_User").Value = Security.Encrypt(((EditText)form.Items.Item("Item_0").Specific).Value);
-                    userTable.UserFields.Fields.Item("U_Pass").Value = Security.Encrypt(((EditText)form.Items.Item("Item_1").Specific).Value);
-                    userTable.UserFields.Fields.Item("U_Past").Value = ((EditText)form.Items.Item("Item_3").Specific).Value;
-                    if (userTable.Update() != 0)
+                    UserTable userTable = _api.Company.UserTables.Item("FOC_DB_CONF");
+                    UserTable userTable1 = _api.Company.UserTables.Item("FOC_EMAIL_PARAM");
+                    if (userTable.GetByKey("1"))
                     {
-                        Framework.Application.SBO_Application.StatusBar.SetText($"Erro ao tentar atualizar os dados: {_api.Company.GetLastErrorDescription()}");
-                        BubbleEvent = false;
+                        userTable.UserFields.Fields.Item("U_User").Value = Security.Encrypt(((EditText)form.Items.Item("Item_0").Specific).Value);
+                        userTable.UserFields.Fields.Item("U_Pass").Value = Security.Encrypt(((EditText)form.Items.Item("Item_1").Specific).Value);
+                        userTable.UserFields.Fields.Item("U_Past").Value = ((EditText)form.Items.Item("Item_3").Specific).Value;
+                        if (userTable.Update() != 0)
+                        {
+                            Framework.Application.SBO_Application.StatusBar.SetText($"Erro ao tentar atualizar os dados: {_api.Company.GetLastErrorDescription()}");
+                            BubbleEvent = false;
+                        }
+                    }
+                    else
+                    {
+                        userTable.Code = "1";
+                        userTable.Name = "Conf";
+                        userTable.UserFields.Fields.Item("U_User").Value = Security.Encrypt(((EditText)form.Items.Item("Item_0").Specific).Value);
+                        userTable.UserFields.Fields.Item("U_Pass").Value = Security.Encrypt(((EditText)form.Items.Item("Item_1").Specific).Value);
+                        userTable.UserFields.Fields.Item("U_Past").Value = ((EditText)form.Items.Item("Item_2").Specific).Value;
+                        if (userTable.Add() != 0)
+                        {
+                            Framework.Application.SBO_Application.StatusBar.SetText($"Erro ao tentar adicionar os dados: {_api.Company.GetLastErrorDescription()}");
+                            BubbleEvent = false;
+                        }
+                    }
+
+                    if (userTable1.GetByKey("1"))
+                    {
+                        userTable1.UserFields.Fields.Item("U_Email").Value = ((EditText)form.Items.Item("Item_11").Specific).Value;
+                        userTable1.UserFields.Fields.Item("U_senha").Value = Security.Encrypt(((EditText)form.Items.Item("Item_12").Specific).Value);
+                        if (userTable1.Update() != 0)
+                        {
+                            Framework.Application.SBO_Application.StatusBar.SetText($"Erro ao tentar atualizar os dados: {_api.Company.GetLastErrorDescription()}");
+                            BubbleEvent = false;
+                        }
+                    }
+                    else
+                    {
+                        userTable1.Code = "1";
+                        userTable1.Name = "Conf";
+                        userTable1.UserFields.Fields.Item("U_Email").Value = ((EditText)form.Items.Item("Item_11").Specific).Value;
+                        userTable1.UserFields.Fields.Item("U_senha").Value = Security.Encrypt(((EditText)form.Items.Item("Item_12").Specific).Value);
+                        if (userTable1.Add() != 0)
+                        {
+                            Framework.Application.SBO_Application.StatusBar.SetText($"Erro ao tentar adicionar os dados: {_api.Company.GetLastErrorDescription()}");
+                            BubbleEvent = false;
+                        }
                     }
                 }
-                else
-                {
-                    userTable.Code = "1";
-                    userTable.Name = "Conf";
-                    userTable.UserFields.Fields.Item("U_User").Value = Security.Encrypt(((EditText)form.Items.Item("Item_0").Specific).Value);
-                    userTable.UserFields.Fields.Item("U_Pass").Value = Security.Encrypt(((EditText)form.Items.Item("Item_1").Specific).Value);
-                    userTable.UserFields.Fields.Item("U_Past").Value = ((EditText)form.Items.Item("Item_2").Specific).Value;
-                    if (userTable.Add() != 0)
-                    {
-                        Framework.Application.SBO_Application.StatusBar.SetText($"Erro ao tentar adicionar os dados: {_api.Company.GetLastErrorDescription()}");
-                        BubbleEvent = false;
-                    }
-                }
+            
+            }
+            catch (Exception ex)
+            {
+                SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText($"erro {ex.Message}");
             }
         }
     }

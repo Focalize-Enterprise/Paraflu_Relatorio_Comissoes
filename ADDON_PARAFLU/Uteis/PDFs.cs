@@ -17,6 +17,7 @@ namespace ADDON_PARAFLU.Uteis
         }
         public string GeraPDF(string periodo1, string periodo2, string cardCode, string DBuser, string DBsenha, string reportPath, string pdfPath)
         {
+            SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Gerando PDF...", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
             string server = _api.Company!.Server;
             string banco = _api.Company.CompanyDB;
             string user = DBuser;

@@ -40,8 +40,6 @@ namespace ADDON_PARAFLU.DataBase
         {
             //User Tables
             TablesCreation tables = new TablesCreation(company, application);
-            // parametros de Corpo do Email
-            tables.CreateTable("FOC_EMAIL_BODY", "FOC_EMAIL_BODY", BoUTBTableType.bott_NoObject);
             //Valores para a DataBase
             tables.CreateTable("FOC_DB_CONF", "FOC_DB_CONF", BoUTBTableType.bott_NoObject);
             //Valores para envio de Email
