@@ -68,6 +68,8 @@ namespace ADDON_PARAFLU.DataBase
             fields.CreateFields("FOC_EMAIL_PARAM", "senha", "senha", BoFieldTypes.db_Alpha, 245, string.Empty);
             fields.CreateFields("FOC_EMAIL_PARAM", "host", "host", BoFieldTypes.db_Alpha, 245, string.Empty);
             fields.CreateFields("FOC_EMAIL_PARAM", "porta", "porta", BoFieldTypes.db_Numeric, 10, string.Empty);
+            fields.CreateFields("FOC_EMAIL_PARAM", "Body", "Corpo do Email", BoFieldTypes.db_Memo, 254, string.Empty);
+
             //
             // campos da configuracao do banco/pasta para salvar PDF
             //

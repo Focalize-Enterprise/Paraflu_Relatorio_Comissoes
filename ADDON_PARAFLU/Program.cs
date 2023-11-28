@@ -39,6 +39,7 @@ namespace ADDON_PARAFLU
                     // formularios abaixo
                     services.AddTransient<EnvioDeRelatorioPorComissoes>();
                     services.AddTransient<DbCredentials>();
+                    services.AddTransient<Form2>();
                 })
                 .Build();
 

@@ -55,6 +55,12 @@ namespace ADDON_PARAFLU
                 oCreationPackage.String = " Configuração de dados do banco";
                 oMenus.AddEx(oCreationPackage);
 
+                oCreationPackage.Type = SAPbouiCOM.BoMenuType.mt_STRING;
+                oCreationPackage.UniqueID = "Form2";
+                oCreationPackage.String = " Form2";
+                oMenus.AddEx(oCreationPackage);
+
+
             }
             catch (Exception)
             { //  Menu already exists
@@ -88,6 +94,11 @@ namespace ADDON_PARAFLU
                                 _ = _serviceProvider.GetRequiredService<DbCredentials>();
                             }
                             break;
+                        case "Form2":
+                            {
+                                _ = _serviceProvider.GetRequiredService<Form2>();
+                            }
+                            break;
                     }
                 }
             }
@@ -101,6 +112,10 @@ namespace ADDON_PARAFLU
         {
             if (Application.SBO_Application.Menus.Exists("EnvioComissoes_Form"))
                 Application.SBO_Application.Menus.RemoveEx("EnvioComissoes_Form");
+            if (Application.SBO_Application.Menus.Exists("DbCredentials"))
+                Application.SBO_Application.Menus.RemoveEx("DbCredentials");
+            if (Application.SBO_Application.Menus.Exists("Form2"))
+                Application.SBO_Application.Menus.RemoveEx("Form2");
         }
     }
 }
