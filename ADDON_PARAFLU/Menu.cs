@@ -51,13 +51,13 @@ namespace ADDON_PARAFLU
                 oMenus.AddEx(oCreationPackage);
 
                 oCreationPackage.Type = SAPbouiCOM.BoMenuType.mt_STRING;
-                oCreationPackage.UniqueID = "DbCredentials";
-                oCreationPackage.String = " Configuração de dados do banco";
+                oCreationPackage.UniqueID = "Form2";
+                oCreationPackage.String = " Gerador de Esboço";
                 oMenus.AddEx(oCreationPackage);
 
                 oCreationPackage.Type = SAPbouiCOM.BoMenuType.mt_STRING;
-                oCreationPackage.UniqueID = "Form2";
-                oCreationPackage.String = " Form2";
+                oCreationPackage.UniqueID = "DbCredentials";
+                oCreationPackage.String = " Configuração de dados do banco";
                 oMenus.AddEx(oCreationPackage);
 
 

@@ -10,6 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Instalador_Paraflu\**" />
+    <EmbeddedResource Remove="Instalador_Paraflu\**" />
+    <None Remove="Instalador_Paraflu\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="SAPBusinessOneSDK">
       <HintPath>C:\Program Files (x86)\SAP\SAP Business One SDK\Lib\SAPBusinessOneSDK.dll</HintPath>
     </Reference>

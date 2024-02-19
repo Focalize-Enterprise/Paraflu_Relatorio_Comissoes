@@ -64,18 +64,25 @@ namespace ADDON_PARAFLU.DataBase
             //
             //Criacao de campos na tabela de email
             //
-            fields.CreateFields("FOC_EMAIL_PARAM", "Email", "Email", BoFieldTypes.db_Alpha, 245, string.Empty);
-            fields.CreateFields("FOC_EMAIL_PARAM", "senha", "senha", BoFieldTypes.db_Alpha, 245, string.Empty);
-            fields.CreateFields("FOC_EMAIL_PARAM", "host", "host", BoFieldTypes.db_Alpha, 245, string.Empty);
+            fields.CreateFields("FOC_EMAIL_PARAM", "Email", "Email", BoFieldTypes.db_Alpha, 100, string.Empty);
+            fields.CreateFields("FOC_EMAIL_PARAM", "senha", "senha", BoFieldTypes.db_Memo, 254, string.Empty);
+            fields.CreateFields("FOC_EMAIL_PARAM", "host", "host", BoFieldTypes.db_Alpha, 100, string.Empty);
             fields.CreateFields("FOC_EMAIL_PARAM", "porta", "porta", BoFieldTypes.db_Numeric, 10, string.Empty);
             fields.CreateFields("FOC_EMAIL_PARAM", "Body", "Corpo do Email", BoFieldTypes.db_Memo, 254, string.Empty);
-
             //
             // campos da configuracao do banco/pasta para salvar PDF
             //
             fields.CreateFields("FOC_DB_CONF", "User", "Usuario", BoFieldTypes.db_Memo, 254, string.Empty);
             fields.CreateFields("FOC_DB_CONF", "Pass", "Senha", BoFieldTypes.db_Memo, 254, string.Empty);
             fields.CreateFields("FOC_DB_CONF", "Past", "Pasta para Salvar PDF", BoFieldTypes.db_Memo, 254, string.Empty);
+            fields.CreateFields("FOC_DB_CONF", "Item", "Item Comissão", BoFieldTypes.db_Alpha, 254, string.Empty);
+            fields.CreateFields("FOC_DB_CONF", "Util", "Utilização nota", BoFieldTypes.db_Numeric, 10, string.Empty);
+            //
+            //Campos na tabela OINV
+            fields.CreateFields("OINV", "FOC_StatusComissao", "Status Comissão", BoFieldTypes.db_Alpha, 1, string.Empty, validvalues: valids, systemTable: true);
+            fields.CreateFields("OINV", "FOC_ValorComissao", "Valor da Comissão (add-on)", BoFieldTypes.db_Float, 10, string.Empty, BoFldSubTypes.st_Price, systemTable: true);
+            fields.CreateFields("OINV", "FOC_DocEntryNFCom", "DocEntry da NF de Comissão", BoFieldTypes.db_Numeric, 10, string.Empty, systemTable: true);
+
         }
 
         /// <summary>
@@ -83,6 +90,6 @@ namespace ADDON_PARAFLU.DataBase
         /// </summary>
         /// <param name="application"> controle UI do SAP </param>
         /// <param name="company"> Controle da di api </param>
-      
+
     }
 }

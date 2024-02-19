@@ -61,6 +61,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
         }
         private void CustomInitialize()
         {
+
             SAPbouiCOM.Framework.Application.SBO_Application.ItemEvent += SBO_Application_ItemEvent;
         }
         private void SBO_Application_ItemEvent(string FormUID, ref ItemEvent pVal, out bool BubbleEvent)
@@ -81,11 +82,6 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                                         AtualizaGrid();
                                     }
                                     break;
-                                case "Item_8":
-                                    {
-                                        EnviaEmails();
-                                    }
-                                    break;
                                 case "Item_7":
                                     {
                                         MarcarDesmarcarTodos();
@@ -95,6 +91,19 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                             }
                         }
                         break;
+                    case BoEventTypes.et_ITEM_PRESSED:
+                        {
+                            switch (pVal.ItemUID)
+                            {
+                                case "Item_8":
+                                    {
+                                        EnviaEmails();
+                                    }
+                                    break;
+                            }
+                        }
+                        break;
+
                 }
             }
             else
@@ -151,6 +160,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                                             totalValue -= Convert.ToDouble(grid.DataTable.Columns.Item("Comissão").Cells.Item(row).Value.ToString(), new CultureInfo("pt-BR"));
                                             double val = Math.Round(totalValue, 2);
                                             ((EditText)form.Items.Item("Item_11").Specific).Value = val.ToString(new CultureInfo("en-US"));
+                                            vendedores.Remove(vendedor);
                                             return;
                                         }
                                     }
@@ -172,8 +182,21 @@ namespace ADDON_PARAFLU.FORMS.UserForms
 
         private void MarcarDesmarcarTodos()
         {
-            bool marcado = !((SAPbouiCOM.CheckBox)form.Items.Item("Item_7").Specific).Checked;
-            MarcarTodos(marcado);
+            form.Freeze(true);
+            try
+            {
+                bool marcado = !((SAPbouiCOM.CheckBox)form.Items.Item("Item_7").Specific).Checked;
+                MarcarTodos(marcado);
+                SomaTotal();
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                form.Freeze(false);
+            }
         }
 
         private void MarcarTodos(bool marcado)
@@ -197,6 +220,30 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 form.Freeze(false);
             }
         }
+        private void SomaTotal()
+        {
+            DataTable dt = form.DataSources.DataTables.Item("DT_0");
+            Grid grid = (Grid)form.Items.Item("Item_6").Specific;
+            double val = 0;
+
+            for (int i = 0; i < grid.Rows.Count; i++)
+            {
+                if (grid.DataTable.Columns.Item("Selecionado").Cells.Item(i).Value.ToString() == "Y")
+                {
+                    string valor = dt.GetValue("Comissão", i).ToString();
+                    totalValue += Convert.ToDouble(dt.GetValue("Comissão", i).ToString(), new CultureInfo("pt-BR"));
+                    val = Math.Round(totalValue, 2);
+                    ((EditText)form.Items.Item("Item_11").Specific).Value = val.ToString(new CultureInfo("en-US"));
+
+                }
+                else
+                {
+                    totalValue -= Convert.ToDouble(grid.DataTable.Columns.Item("Comissão").Cells.Item(i).Value.ToString(), new CultureInfo("pt-BR"));
+                    val = Math.Round(totalValue, 2);
+                    ((EditText)form.Items.Item("Item_11").Specific).Value = val.ToString(new CultureInfo("en-US"));
+                }
+            }
+        }
 
         private void AtualizaGrid()
         {
@@ -210,6 +257,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 string datafim = ((EditText)this.form.Items.Item("Item_4").Specific).Value;
                 dataini = dataini.Substring(0, 4) + "/" + dataini.Substring(4, 2) + "/" + dataini.Substring(6, 2);
                 datafim = datafim.Substring(0, 4) + "/" + datafim.Substring(4, 2) + "/" + datafim.Substring(6, 2);
+
                 string query = "";
                 if (string.IsNullOrEmpty(dataini))
                 {
@@ -248,10 +296,11 @@ namespace ADDON_PARAFLU.FORMS.UserForms
             recordset.DoQuery(query);
             if (recordset.RecordCount > 0)
             {
-                return (Security.Decrypt(recordset.Fields.Item(0).Value.ToString()), Security.Decrypt(recordset.Fields.Item(1).Value.ToString()), recordset.Fields.Item(2).Value.ToString());
+                return (recordset.Fields.Item(0).Value.ToString(), recordset.Fields.Item(1).Value.ToString(), recordset.Fields.Item(2).Value.ToString());
             }
             return (string.Empty, string.Empty, string.Empty);
         }
+
         private void EnviaEmails()
         {
             form.Freeze(true);
@@ -267,8 +316,9 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 for (int index = 0; index < values.Length; index++)
                 {
                     Vendedores vendedores = values[index];
+                    SAPbouiCOM.Framework.Application.SBO_Application.MessageBox($"{vendedores.Name} {vendedores.Code} {vendedores.E_Mail} {index}");
                     string body = recordset.Fields.Item("U_Body").Value.ToString();
-                    string reportPath = @$"{System.Windows.Forms.Application.StartupPath}ReportComissões.rpt";
+                    string reportPath = @$"{System.Windows.Forms.Application.StartupPath}ReportComissões_PARAFLU_PRD.rpt";
                     string caminho = "";
                     string cardCode = vendedores.Code;
                     string slpName = vendedores.Name;
@@ -282,6 +332,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                     SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Enviando Email...", BoMessageTime.bmt_Medium, BoStatusBarMessageType.smt_Warning);
                     string[] anexos = new string[] { caminhoPdf };
                     _email.EnviarPorEmail(vendedores.E_Mail.Split('@').First(), vendedores.E_Mail, anexos, body);
+                    SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Email enviado com sucesso!", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Success);
                 }
             }
             catch (Exception ex)
@@ -290,7 +341,6 @@ namespace ADDON_PARAFLU.FORMS.UserForms
             }
             finally
             {
-                SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Email enviado com sucesso!", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Success);
                 form.Freeze(false);
             }
         }

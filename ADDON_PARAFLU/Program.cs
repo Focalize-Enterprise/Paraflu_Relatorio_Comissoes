@@ -1,3 +1,4 @@
+using ADDON_PARAFLU.DataBase;
 using ADDON_PARAFLU.DIAPI;
 using ADDON_PARAFLU.DIAPI.Interfaces;
 using ADDON_PARAFLU.Forms.UserForms;
@@ -63,7 +64,7 @@ namespace ADDON_PARAFLU
                     System.Windows.Forms.MessageBox.Show("Erro ao tentar conectar com a DIAPI Desligando o add-on");
                     return;
                 }
-
+                SetUp.StartSetUp(comp.Company);
 
                 IMenu menu = ServiceProvider.GetRequiredService<IMenu>();
                 menu.RemoveMenus();

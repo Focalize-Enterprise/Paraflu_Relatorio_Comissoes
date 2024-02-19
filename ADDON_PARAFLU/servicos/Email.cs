@@ -8,7 +8,7 @@ using Attachment = System.Net.Mail.Attachment;
 using ADDON_PARAFLU.FORMS.Recursos;
 using ADDON_PARAFLU.servicos.Interfaces;
 using ADDON_PARAFLU.DIAPI.Interfaces;
-
+using ADDON_PARAFLU.Services;
 
 namespace ADDON_PARAFLU.Uteis
 {
@@ -38,7 +38,7 @@ namespace ADDON_PARAFLU.Uteis
                 E_mail = recordset.Fields.Item("U_Email").Value.ToString();
                 Host = recordset.Fields.Item("U_host").Value.ToString();
                 Name = recordset.Fields.Item("Name").Value.ToString();
-                Senha = recordset.Fields.Item("U_senha").Value.ToString();
+                Senha = Security.Decrypt(recordset.Fields.Item("U_senha").Value.ToString());
                 Porta = (int)recordset.Fields.Item("U_porta").Value;
         }
 
@@ -49,7 +49,7 @@ namespace ADDON_PARAFLU.Uteis
             var mailMessage = new MailMessage();
             try
             {
-                // como a gente vai usar isso nos dois formulários é melhor colocar isso em uma outra classe 
+                // como a gente vai usar isso nos dois formulários é melhor colocar isso em uma outra classe
                 mimeMessage.From.Add(new MailboxAddress(Name, E_mail));
                 mimeMessage.To.Add(new MailboxAddress(destinationName, destinationEmail));
                 mimeMessage.Subject = "Comissões";
@@ -67,14 +67,14 @@ namespace ADDON_PARAFLU.Uteis
                 {
                     mailMessage.Headers.Add(header.Field, header.Value);
                 }
-                foreach (string anexo in anexos)
+                foreach (string anexo in anexos.Where(x => x != ""))
                     mailMessage.Attachments.Add(new Attachment(anexo));
                 mailMessage.From = new MailAddress(mimeMessage.From[0].ToString());
                 mailMessage.Subject = mimeMessage.Subject;
                 mailMessage.Body = mimeMessage.HtmlBody;
                 mailMessage.IsBodyHtml = true;
                 smtp.UseDefaultCredentials = false;
-                smtp.EnableSsl = true;
+                smtp.EnableSsl = false;
                 smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
                 smtp.Credentials = new NetworkCredential(E_mail, Senha);
                 smtp.Send(mailMessage);

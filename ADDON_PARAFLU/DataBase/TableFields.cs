@@ -37,7 +37,7 @@ namespace ADDON_PARAFLU.DataBase
                 if (this.IsFieldCreated(field, table, systemTable) != -1)
                     return;
 
-                userFieldsMD.TableName = table;
+                userFieldsMD.TableName = table.ToUpper().Trim();
                 userFieldsMD.Name = field;
                 userFieldsMD.Description = fieldDescription;
 
@@ -56,6 +56,7 @@ namespace ADDON_PARAFLU.DataBase
                         userFieldsMD.ValidValues.Description = validValue.Description;
                         userFieldsMD.ValidValues.Add();
                     }
+                    userFieldsMD.ValidValues.Delete();
                 }
 
                 if (!string.IsNullOrEmpty(defaultValue))

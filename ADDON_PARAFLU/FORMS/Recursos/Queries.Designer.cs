@@ -61,12 +61,37 @@ namespace ADDON_PARAFLU.FORMS.Recursos {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT 
+        ///&quot;Check&quot;,
+        ///&quot;Doc&quot;,
+        ///&quot;ObjType&quot;,
+        ///&quot;DocEntry&quot;,
+        ///&quot;DocDate&quot;,
+        ///&quot;CardName&quot;,
+        ///&quot;SlpCode&quot;,
+        ///&quot;SlpName&quot;,
+        ///&quot;Serial&quot;,
+        ///&quot;Total&quot;,
+        ///&quot;Comissao&quot;,
+        ///&quot;U_FOC_CodPN&quot;
+        ///From &quot;FOC_Comissao&quot; 
+        ///Where
+        ///&quot;SlpCode&quot; = &apos;Vendedor&apos;
+        ///And &quot;DocDate&quot; between &apos;Dataini&apos; And &apos;Datafim&apos;.
+        /// </summary>
+        internal static string Comissões_Individuais {
+            get {
+                return ResourceManager.GetString("Comissões_Individuais", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Select  
         ///&apos;N&apos; as &quot;Selecionado&quot;,
         ///&quot;SlpCode&quot; as &quot;Código&quot;,
         ///&quot;SlpName&quot; as &quot;Nome do Vendedor&quot;,
         ///&quot;Email&quot; as &quot;Email do vendedor&quot;,
-        ///&quot;DocDate&quot; as &quot;Data de geração&quot;,
+        ///null as &quot;Data de geração&quot;,
         ///sum(&quot;LineTotal&quot;) as &quot;Total&quot;,
         ///sum(&quot;IPI&quot;) as &quot;IPI&quot;,
         ///sum(&quot;ICMSST&quot;) as &quot;ICMS-ST&quot;,
@@ -75,7 +100,7 @@ namespace ADDON_PARAFLU.FORMS.Recursos {
         /// 
         /// (
         ///
-        ///SELECT  top 10 
+        ///SELECT
         ///&apos;NS&apos; &quot;Doc&quot;,
         ///T0.&quot;ObjType&quot;,
         ///T0.&quot;DocEntry&quot;, 
@@ -87,7 +112,8 @@ namespace ADDON_PARAFLU.FORMS.Recursos {
         ///T2.&quot;SlpName&quot;,
         ///T2.&quot;Email&quot;,
         ///T0.&quot;Serial&quot;, 
-        ///T1.&quot;I [o restante da cadeia de caracteres foi truncado]&quot;;.
+        ///T1.&quot;ItemCode&quot;, 
+        ///T1. [o restante da cadeia de caracteres foi truncado]&quot;;.
         /// </summary>
         internal static string Notas_Fiscais_HANA {
             get {
@@ -101,7 +127,7 @@ namespace ADDON_PARAFLU.FORMS.Recursos {
         ///&quot;SlpCode&quot; as &quot;Código&quot;,
         ///&quot;SlpName&quot; as &quot;Nome do Vendedor&quot;,
         ///&quot;Email&quot; as &quot;Email do vendedor&quot;,
-        ///&quot;DocDate&quot; as &quot;Data de geração&quot;,
+        ///null as &quot;Data de geração&quot;,
         ///sum(&quot;LineTotal&quot;) as &quot;Total&quot;,
         ///sum(&quot;IPI&quot;) as &quot;IPI&quot;,
         ///sum(&quot;ICMSST&quot;) as &quot;ICMS-ST&quot;,
@@ -120,11 +146,37 @@ namespace ADDON_PARAFLU.FORMS.Recursos {
         ///T0.&quot;CardName&quot;, 
         ///T0.&quot;SlpCode&quot;, 
         ///T2.&quot;SlpName&quot;,
-        ///T2.&quot;Emai [o restante da cadeia de caracteres foi truncado]&quot;;.
+        ///T2.&quot;Email&quot;,
+        /// [o restante da cadeia de caracteres foi truncado]&quot;;.
         /// </summary>
         internal static string Notas_Fiscais_SQL {
             get {
                 return ResourceManager.GetString("Notas_Fiscais_SQL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a SELECT 
+        ///&quot;Check&quot;,
+        ///&quot;Doc&quot;,
+        ///&quot;ObjType&quot;,
+        ///&quot;DocEntry&quot;,
+        ///&quot;DocDate&quot;,
+        ///&quot;CardName&quot;,
+        ///&quot;SlpCode&quot;,
+        ///&quot;SlpName&quot;,
+        ///&quot;Serial&quot;,
+        ///&quot;Total&quot;,
+        ///&quot;Comissao&quot;,
+        ///&quot;U_FOC_CodPN&quot;
+        ///From &quot;FOC_Comissao&quot; 
+        ///Where
+        ///&quot;SlpCode&quot; = &apos;Vendedor&apos;
+        ///And &quot;DocDate&quot; between &apos;Dataini&apos; And &apos;Datafim&apos;.
+        /// </summary>
+        internal static string Notas_Fiscais_View {
+            get {
+                return ResourceManager.GetString("Notas_Fiscais_View", resourceCulture);
             }
         }
         
