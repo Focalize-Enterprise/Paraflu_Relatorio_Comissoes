@@ -38,7 +38,7 @@ namespace ADDON_PARAFLU.Uteis
 
                 E_mail = recordset.Fields.Item("U_Email").Value.ToString();
                 Host = recordset.Fields.Item("U_host").Value.ToString();
-                Name = recordset.Fields.Item("Name").Value.ToString();
+                Name = recordset.Fields.Item("U_Nome").Value.ToString();
                 Senha = Security.Decrypt(recordset.Fields.Item("U_senha").Value.ToString());
                 Porta = (int)recordset.Fields.Item("U_porta").Value;
                 SSL = recordset.Fields.Item("U_SSL").Value.ToString() == "Y";
