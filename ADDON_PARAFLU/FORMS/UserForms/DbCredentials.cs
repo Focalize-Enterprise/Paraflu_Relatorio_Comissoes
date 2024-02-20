@@ -65,8 +65,7 @@ namespace ADDON_PARAFLU.Forms.UserForms
                 ((EditText)form.Items.Item("Item_17").Specific).Value = recordset1.Fields.Item(3).Value.ToString();
                 ((EditText)form.Items.Item("Item_18").Specific).Value = recordset1.Fields.Item(2).Value.ToString();
                 ((EditText)form.Items.Item("Item_27").Specific).Value = recordset1.Fields.Item(4).Value.ToString();
-                bool check = recordset1.Fields.Item(5).Value;
-                ((SAPbouiCOM.CheckBox)form.Items.Item("Item_29").Specific).Checked = recordset1.Fields.Item(5).Value;
+                ((SAPbouiCOM.CheckBox)form.Items.Item("Item_29").Specific).Checked = recordset1.Fields.Item(5).Value.ToString() == "Y";
             }
 
             Framework.Application.SBO_Application.ItemEvent += SBO_Application_ItemEvent;

@@ -20,8 +20,6 @@ namespace ADDON_PARAFLU.FORMS.UserForms
         private double totalValue = 0;
         private HashSet<int> linhas_selecionadas;
 
-        private Dictionary<string, Vendedores> vendedores = new Dictionary<string, Vendedores>();
-
 
         public EnvioDeRelatorioPorComissoes(IAPI api, IEmail email, IPDFs pdfs)
         {
@@ -156,7 +154,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
             {
                 // Y = marcado, N não marcado
                 SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("marcando", BoMessageTime.bmt_Medium, BoStatusBarMessageType.smt_Warning);
-                string marcado = ((SAPbouiCOM.CheckBox)form.Items.Item("Item_7").Specific).Checked ? "Y" : "N";
+                string marcado = !((SAPbouiCOM.CheckBox)form.Items.Item("Item_7").Specific).Checked ? "Y" : "N";
                 double sum = 0;
                 for (int row = 0; row < table.Rows.Count; row++)
                 {
@@ -265,7 +263,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 Recordset recordset = (Recordset)_api.Company.GetBusinessObject(BoObjectTypes.BoRecordset);
                 string query = @"SELECT ""U_Body"" FROM ""@FOC_EMAIL_PARAM"" WHERE ""Code"" = '1'";
                 recordset.DoQuery(query);
-                (string user, string senha, string past) = GetDataForBD();
+                (string user, string senha, string past, string crystal) = GetDataForBD();
                 //Vendedores[] values = vendedores.Values.ToArray();
 
                 SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText($"Enviando {linhas_selecionadas.Count} emails", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Warning);

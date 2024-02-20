@@ -19,6 +19,7 @@ namespace ADDON_PARAFLU.Uteis
         internal string Senha { get; set; }
         internal string Host { get; set; }
         internal int Porta { get; set; }
+        internal bool SSL { get; set; }
 
         private readonly IAPI _api;
 
@@ -40,6 +41,7 @@ namespace ADDON_PARAFLU.Uteis
                 Name = recordset.Fields.Item("Name").Value.ToString();
                 Senha = Security.Decrypt(recordset.Fields.Item("U_senha").Value.ToString());
                 Porta = (int)recordset.Fields.Item("U_porta").Value;
+                SSL = recordset.Fields.Item("U_SSL").Value.ToString() == "Y";
         }
 
         public void EnviarPorEmail(string destinationName, string destinationEmail, string[] anexos, string body)
@@ -74,7 +76,7 @@ namespace ADDON_PARAFLU.Uteis
                 mailMessage.Body = mimeMessage.HtmlBody;
                 mailMessage.IsBodyHtml = true;
                 smtp.UseDefaultCredentials = false;
-                smtp.EnableSsl = false;
+                smtp.EnableSsl = SSL;
                 smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
                 smtp.Credentials = new NetworkCredential(E_mail, Senha);
                 smtp.Send(mailMessage);
