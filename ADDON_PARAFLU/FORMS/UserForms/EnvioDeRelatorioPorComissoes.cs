@@ -279,7 +279,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
 
                     //SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText($"nome: {slpName}, code: {cardCode}, email: {email}, index: {index}");
                     string body = recordset.Fields.Item("U_Body").Value.ToString()!;
-                    string reportPath = @$"{System.Windows.Forms.Application.StartupPath}ReportComissões_PARAFLU_PRD.rpt";
+                    string reportPath = @$"{System.Windows.Forms.Application.StartupPath}{crystal}";
                     string periodo2 = ((EditText)this.form.Items.Item("Item_4").Specific).Value;
                     string periodo1 = ((EditText)this.form.Items.Item("Item_3").Specific).Value;
                     periodo1 = periodo1.Substring(0, 4) + "-" + periodo1.Substring(4, 2) + "-" + periodo1.Substring(6, 2);
