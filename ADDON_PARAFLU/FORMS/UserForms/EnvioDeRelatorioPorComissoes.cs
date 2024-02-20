@@ -83,14 +83,13 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                                     {
                                         MarcarDesmarcarTodos();
                                     }
-                                    break;
+                                break;
                                 case "Item_8":
                                     {
                                         EnviaEmails();
                                         ClearSelection();
                                     }
                                     break;
-
                             }
                         }
                         break;
@@ -156,7 +155,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
             try
             {
                 // Y = marcado, N não marcado
-                Grid grid = (Grid)form.Items.Item("Item_6").Specific;
+                SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("marcando", BoMessageTime.bmt_Medium, BoStatusBarMessageType.smt_Warning);
                 string marcado = ((SAPbouiCOM.CheckBox)form.Items.Item("Item_7").Specific).Checked ? "Y" : "N";
                 double sum = 0;
                 for (int row = 0; row < table.Rows.Count; row++)
@@ -164,6 +163,11 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                     if(!table.Columns.Item("Selecionado").Cells.Item(row).Value.ToString()!.Equals(marcado, StringComparison.OrdinalIgnoreCase))
                     {
                         sum += Convert.ToDouble(table.GetValue("Comissão", row).ToString(), new CultureInfo("pt-BR"));
+                        table.Columns.Item("Selecionado").Cells.Item(row).Value = marcado;
+                        if(marcado == "Y")
+                            linhas_selecionadas.Add(row);
+                        else
+                            linhas_selecionadas.Remove(row);
                     }
                 }
 
@@ -180,6 +184,8 @@ namespace ADDON_PARAFLU.FORMS.UserForms
 
                 double val = Math.Round(totalValue, 2);
                 ((EditText)form.Items.Item("Item_11").Specific).Value = val.ToString(new CultureInfo("en-US"));
+
+                SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("marcação finalizada", BoMessageTime.bmt_Medium, BoStatusBarMessageType.smt_Warning);
 
                 //MarcarTodos(marcado);
                 //SomaTotal();
