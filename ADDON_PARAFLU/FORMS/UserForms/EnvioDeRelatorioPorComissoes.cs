@@ -289,16 +289,16 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 form.Freeze(false);
             }
         }
-        private (string user, string senha, string past) GetDataForBD()
+        private (string user, string senha, string past, string crystal) GetDataForBD()
         {
             Recordset recordset = (Recordset)_api.Company.GetBusinessObject(BoObjectTypes.BoRecordset);
-            string query = @"SELECT ""U_User"", ""U_Pass"", ""U_Past"" FROM ""@FOC_DB_CONF"" WHERE ""Code"" = '1'";
+            string query = @"SELECT ""U_User"", ""U_Pass"", ""U_Past"", ""U_Crystal"" FROM ""@FOC_DB_CONF"" WHERE ""Code"" = '1'";
             recordset.DoQuery(query);
             if (recordset.RecordCount > 0)
             {
-                return (recordset.Fields.Item(0).Value.ToString(), recordset.Fields.Item(1).Value.ToString(), recordset.Fields.Item(2).Value.ToString());
+                return (recordset.Fields.Item(0).Value.ToString(), recordset.Fields.Item(1).Value.ToString(), recordset.Fields.Item(2).Value.ToString(), recordset.Fields.Item(3).Value.ToString());
             }
-            return (string.Empty, string.Empty, string.Empty);
+            return (string.Empty, string.Empty, string.Empty, string.Empty);
         }
 
         private void EnviaEmails()
@@ -308,7 +308,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
             string query = @"SELECT ""U_Body"" FROM ""@FOC_EMAIL_PARAM"" WHERE ""Code"" = '1'";
             recordset.DoQuery(query);
             DataTable dt = form.DataSources.DataTables.Item("DT_0");
-            (string user, string senha, string past) = GetDataForBD();
+            (string user, string senha, string past, string crystal) = GetDataForBD();
             try
             {
                 form.Freeze(true);
@@ -318,7 +318,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                     Vendedores vendedores = values[index];
                     SAPbouiCOM.Framework.Application.SBO_Application.MessageBox($"{vendedores.Name} {vendedores.Code} {vendedores.E_Mail} {index}");
                     string body = recordset.Fields.Item("U_Body").Value.ToString();
-                    string reportPath = @$"{System.Windows.Forms.Application.StartupPath}ReportComissões_PARAFLU_PRD.rpt";
+                    string reportPath = @$"{System.Windows.Forms.Application.StartupPath}{crystal}";
                     string caminho = "";
                     string cardCode = vendedores.Code;
                     string slpName = vendedores.Name;

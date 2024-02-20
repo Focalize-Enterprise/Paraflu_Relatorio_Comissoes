@@ -64,11 +64,13 @@ namespace ADDON_PARAFLU.DataBase
             //
             //Criacao de campos na tabela de email
             //
+            fields.CreateFields("FOC_EMAIL_PARAM", "Nome", "Nome para Envio de Email", BoFieldTypes.db_Alpha, 100, string.Empty);
             fields.CreateFields("FOC_EMAIL_PARAM", "Email", "Email", BoFieldTypes.db_Alpha, 100, string.Empty);
             fields.CreateFields("FOC_EMAIL_PARAM", "senha", "senha", BoFieldTypes.db_Memo, 254, string.Empty);
             fields.CreateFields("FOC_EMAIL_PARAM", "host", "host", BoFieldTypes.db_Alpha, 100, string.Empty);
             fields.CreateFields("FOC_EMAIL_PARAM", "porta", "porta", BoFieldTypes.db_Numeric, 10, string.Empty);
             fields.CreateFields("FOC_EMAIL_PARAM", "Body", "Corpo do Email", BoFieldTypes.db_Memo, 254, string.Empty);
+            fields.CreateFields("FOC_EMAIL_PARAM", "SSL", "SSL", BoFieldTypes.db_Alpha, 1, string.Empty, validvalues: valids);
             //
             // campos da configuracao do banco/pasta para salvar PDF
             //
@@ -76,6 +78,7 @@ namespace ADDON_PARAFLU.DataBase
             fields.CreateFields("FOC_DB_CONF", "Pass", "Senha", BoFieldTypes.db_Memo, 254, string.Empty);
             fields.CreateFields("FOC_DB_CONF", "Past", "Pasta para Salvar PDF", BoFieldTypes.db_Memo, 254, string.Empty);
             fields.CreateFields("FOC_DB_CONF", "Item", "Item Comissão", BoFieldTypes.db_Alpha, 254, string.Empty);
+            fields.CreateFields("FOC_DB_CONF", "Crystal", "Layout Crystal", BoFieldTypes.db_Alpha, 254, string.Empty);
             fields.CreateFields("FOC_DB_CONF", "Util", "Utilização nota", BoFieldTypes.db_Numeric, 10, string.Empty);
             //
             //Campos na tabela OINV
