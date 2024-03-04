@@ -9,6 +9,7 @@ using ADDON_PARAFLU.FORMS.Recursos;
 using ADDON_PARAFLU.servicos.Interfaces;
 using ADDON_PARAFLU.DIAPI.Interfaces;
 using ADDON_PARAFLU.Services;
+using SAPbouiCOM;
 
 namespace ADDON_PARAFLU.Uteis
 {
@@ -44,7 +45,7 @@ namespace ADDON_PARAFLU.Uteis
                 SSL = recordset.Fields.Item("U_SSL").Value.ToString() == "Y";
         }
 
-        public void EnviarPorEmail(string destinationName, string destinationEmail, string[] anexos, string body)
+        public void EnviarPorEmail(string destinationName, string destinationEmail, string[] anexos, string body, bool teste)
         {
             SmtpClient smtp = new SmtpClient(Host, Porta);
             var mimeMessage = new MimeMessage();
@@ -52,8 +53,16 @@ namespace ADDON_PARAFLU.Uteis
             try
             {
                 // como a gente vai usar isso nos dois formulários é melhor colocar isso em uma outra classe
+                if (string.IsNullOrEmpty(E_mail))
+                {
+                    SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Nenhum Email cadastrado para envio!", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Warning);
+                    return;
+                }
                 mimeMessage.From.Add(new MailboxAddress(Name, E_mail));
-                mimeMessage.To.Add(new MailboxAddress(destinationName, destinationEmail));
+                if (teste)
+                    mimeMessage.To.Add(new MailboxAddress(Name, E_mail));
+                else
+                    mimeMessage.To.Add(new MailboxAddress(destinationName, destinationEmail));
                 mimeMessage.Subject = "Comissões";
                 var builder = new BodyBuilder();
                 builder.HtmlBody = body;

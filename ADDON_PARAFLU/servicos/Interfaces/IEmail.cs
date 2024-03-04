@@ -2,7 +2,7 @@
 {
     public interface IEmail
     {
-        void EnviarPorEmail(string destinationName, string destinationEmail, string[] anexos, string body);
+        void EnviarPorEmail(string destinationName, string destinationEmail, string[] anexos, string body, bool teste);
         void GetParamEmail();
     }
 }

@@ -20,6 +20,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
         private readonly SAPbouiCOM.Form form;
         private DataTable table;
         private double totalValue = 0;
+        private double totalValue2 = 0;
         private Dictionary<int, Nota> nota = new Dictionary<int, Nota>();
         private HashSet<int> notas = new HashSet<int>();
 
@@ -158,31 +159,47 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                                     if (grid.DataTable.Columns.Item("Check").Cells.Item(row).Value.ToString() == "Y")
                                     {
                                         int codNota = int.Parse(grid.DataTable.Columns.Item("DocEntry").Cells.Item(row).Value.ToString());
-
-                                        string valor = dt.GetValue("Comissao", row).ToString();
                                         double val = 0;
+                                        double val2 = 0;
+
                                         if (notas.TryGetValue(codNota, out _))
                                         {
+                                            //Coluna Comissão
                                             totalValue += Convert.ToDouble(dt.GetValue("Comissao", row).ToString(), new CultureInfo("pt-BR"));
                                             val = Math.Round(totalValue, 2);
                                             ((EditText)form.Items.Item("Item_12").Specific).Value = val.ToString(new CultureInfo("en-US"));
+
+                                            //Coluna Total
+                                            totalValue2 += Convert.ToDouble(dt.GetValue("Total", row).ToString(), new CultureInfo("pt-BR"));
+                                            val2 = Math.Round(totalValue2, 2);
+                                            ((EditText)form.Items.Item("Item_26").Specific).Value = val2.ToString(new CultureInfo("en-US"));
+
                                             return;
                                         }
-
+                                        //Coluna Comissão
                                         notas.Add(codNota);
                                         totalValue += Convert.ToDouble(dt.GetValue("Comissao", row).ToString(), new CultureInfo("pt-BR"));
                                         val = Math.Round(totalValue, 2);
                                         ((EditText)form.Items.Item("Item_12").Specific).Value = val.ToString(new CultureInfo("en-US"));
+
+                                        //Coluna Total
+                                        totalValue2 += Convert.ToDouble(dt.GetValue("Total", row).ToString(), new CultureInfo("pt-BR"));
+                                        val2 = Math.Round(totalValue2, 2);
+                                        ((EditText)form.Items.Item("Item_26").Specific).Value = val2.ToString(new CultureInfo("en-US"));
                                     }
                                     else
                                     {
                                         int codNota = int.Parse(grid.DataTable.Columns.Item("DocEntry").Cells.Item(row).Value.ToString());
-
                                         if (notas.TryGetValue(codNota, out _))
                                         {
                                             totalValue -= Convert.ToDouble(grid.DataTable.Columns.Item("Comissao").Cells.Item(row).Value.ToString(), new CultureInfo("pt-BR"));
                                             double val = Math.Round(totalValue, 2);
                                             ((EditText)form.Items.Item("Item_12").Specific).Value = val.ToString(new CultureInfo("en-US"));
+
+                                            totalValue2 -= Convert.ToDouble(grid.DataTable.Columns.Item("Total").Cells.Item(row).Value.ToString(), new CultureInfo("pt-BR"));
+                                            double val2 = Math.Round(totalValue2, 2);
+                                            ((EditText)form.Items.Item("Item_26").Specific).Value = val2.ToString(new CultureInfo("en-US"));
+
                                             notas.Remove(codNota);
                                             return;
                                         }
@@ -371,7 +388,6 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 form.Freeze(false);
             }
         }
-
         private void Limpar()
         {
             try
@@ -389,8 +405,8 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 ((EditText)form.Items.Item("Item_18").Specific).Value = "";
                 ((EditText)form.Items.Item("Item_20").Specific).Value = "";
                 ((EditText)form.Items.Item("Item_21").Specific).Value = "";
+                ((EditText)form.Items.Item("Item_26").Specific).Value = "";
                 dt.Clear();
-
             }
             catch { }
             finally
@@ -412,14 +428,20 @@ namespace ADDON_PARAFLU.FORMS.UserForms
             Grid grid = (Grid)form.Items.Item("Item_9").Specific;
 
             double val = 0;
+            double val2 = 0;
             for (int i = 0; i < grid.Rows.Count; i++)
             {
                 if(grid.DataTable.Columns.Item("Check").Cells.Item(i).Value.ToString() == "Y")
                 {
-                    string valor = dt.GetValue("Comissao", i).ToString();
+                    //Coluna Comissão
                     totalValue += Convert.ToDouble(dt.GetValue("Comissao", i).ToString(), new CultureInfo("pt-BR"));
                     val = Math.Round(totalValue, 2);
                     ((EditText)form.Items.Item("Item_12").Specific).Value = val.ToString(new CultureInfo("en-US"));
+
+                    //Coluna Total
+                    totalValue2 += Convert.ToDouble(dt.GetValue("Total", i).ToString(), new CultureInfo("pt-BR"));
+                    val2 = Math.Round(totalValue2, 2);
+                    ((EditText)form.Items.Item("Item_26").Specific).Value = val2.ToString(new CultureInfo("en-US"));
 
                 }
                 else
@@ -427,6 +449,10 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                     totalValue -= Convert.ToDouble(grid.DataTable.Columns.Item("Comissao").Cells.Item(i).Value.ToString(), new CultureInfo("pt-BR"));
                     val = Math.Round(totalValue, 2);
                     ((EditText)form.Items.Item("Item_12").Specific).Value = val.ToString(new CultureInfo("en-US"));
+
+                    totalValue2 -= Convert.ToDouble(grid.DataTable.Columns.Item("Total").Cells.Item(i).Value.ToString(), new CultureInfo("pt-BR"));
+                    val2 = Math.Round(totalValue2, 2);
+                    ((EditText)form.Items.Item("Item_26").Specific).Value = val.ToString(new CultureInfo("en-US"));
                 }
             }
         }

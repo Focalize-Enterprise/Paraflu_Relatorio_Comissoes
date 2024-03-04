@@ -65,7 +65,7 @@ namespace ADDON_PARAFLU.FORMS.Recursos {
         ///&lt;Application&gt;
         ///  &lt;forms&gt;
         ///    &lt;action type=&quot;add&quot;&gt;
-        ///      &lt;form appformnumber=&quot;-1&quot; FormType=&quot;-1&quot; type=&quot;0&quot; BorderStyle=&quot;0&quot; uid=&quot;&quot; title=&quot;Dados do Banco&quot; visible=&quot;0&quot; default_button=&quot;&quot; pane=&quot;1&quot; color=&quot;0&quot; left=&quot;487&quot; top=&quot;99&quot; width=&quot;371&quot; height=&quot;349&quot; client_width=&quot;&quot; client_height=&quot;&quot; AutoManaged=&quot;0&quot; SupportedModes=&quot;15&quot; ObjectType=&quot;&quot; mode=&quot;1&quot;&gt;
+        ///      &lt;form appformnumber=&quot;-1&quot; FormType=&quot;-1&quot; type=&quot;0&quot; BorderStyle=&quot;0&quot; uid=&quot;&quot; title=&quot;Dados do Banco&quot; visible=&quot;0&quot; default_button=&quot;&quot; pane=&quot;1&quot; color=&quot;0&quot; left=&quot;487&quot; top=&quot;99&quot; width=&quot;327&quot; height=&quot;517&quot; client_width=&quot;&quot; client_height=&quot;&quot; AutoManaged=&quot;0&quot; SupportedModes=&quot;15&quot; ObjectType=&quot;&quot; mode=&quot;1&quot;&gt;
         ///        &lt;datasources&gt;
         ///          &lt;DataTables /&gt;
         ///          &lt;dbdatasources&gt;
@@ -100,13 +100,12 @@ namespace ADDON_PARAFLU.FORMS.Recursos {
         ///&lt;Application&gt;
         ///  &lt;forms&gt;
         ///    &lt;action type=&quot;add&quot;&gt;
-        ///      &lt;form appformnumber=&quot;-1&quot; FormType=&quot;-1&quot; type=&quot;0&quot; BorderStyle=&quot;0&quot; uid=&quot;&quot; title=&quot;New Form 1&quot; visible=&quot;0&quot; default_button=&quot;&quot; pane=&quot;1&quot; color=&quot;0&quot; left=&quot;0&quot; top=&quot;0&quot; width=&quot;851&quot; height=&quot;515&quot; client_width=&quot;&quot; client_height=&quot;&quot; AutoManaged=&quot;0&quot; SupportedModes=&quot;15&quot; ObjectType=&quot;&quot; mode=&quot;1&quot;&gt;
+        ///      &lt;form appformnumber=&quot;-1&quot; FormType=&quot;-1&quot; type=&quot;0&quot; BorderStyle=&quot;0&quot; uid=&quot;&quot; title=&quot;Gerador de Esboço&quot; visible=&quot;0&quot; default_button=&quot;&quot; pane=&quot;1&quot; color=&quot;0&quot; left=&quot;262&quot; top=&quot;40&quot; width=&quot;851&quot; height=&quot;515&quot; client_width=&quot;&quot; client_height=&quot;&quot; AutoManaged=&quot;0&quot; SupportedModes=&quot;15&quot; ObjectType=&quot;&quot; mode=&quot;1&quot;&gt;
         ///        &lt;datasources&gt;
-        ///          &lt;DataTables /&gt;
-        ///          &lt;dbdatasources&gt;
-        ///            &lt;action type=&quot;add&quot; /&gt;
-        ///          &lt;/dbdatasources&gt;
-        /// [o restante da cadeia de caracteres foi truncado]&quot;;.
+        ///          &lt;DataTables&gt;
+        ///            &lt;DataTable Uid=&quot;DT_0&quot;&gt;
+        ///              &lt;Columns /&gt;
+        ///            &lt;/DataT [o restante da cadeia de caracteres foi truncado]&quot;;.
         /// </summary>
         internal static string Form2 {
             get {
