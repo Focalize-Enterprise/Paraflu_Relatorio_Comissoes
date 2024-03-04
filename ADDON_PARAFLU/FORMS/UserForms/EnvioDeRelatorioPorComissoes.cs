@@ -81,9 +81,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                                     break;
                                 case "Item_7":
                                     {
-                                        form.Freeze(true);
                                         MarcarDesmarcarTodos();
-                                        form.Freeze(false);
                                     }
                                     break;
                                 case "Item_8":
