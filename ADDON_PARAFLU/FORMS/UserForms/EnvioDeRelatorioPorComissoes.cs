@@ -79,11 +79,6 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                                         AtualizaGrid();
                                     }
                                     break;
-                                case "Item_7":
-                                    {
-                                        MarcarDesmarcarTodos();
-                                    }
-                                    break;
                                 case "Item_8":
                                     {
                                         EnviaEmails();
@@ -103,9 +98,10 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                         {
                             if (pVal.ItemUID == "Item_6" && pVal.ColUID == "Selecionado" && !pVal.BeforeAction)
                             {
+                                form.Freeze(true);
+
                                 try
                                 {
-                                    form.Freeze(true);
                                     Grid grid = (Grid)form.Items.Item("Item_6").Specific;
                                     // busca a linha mesmo se o grid estiver colapsado
                                     int row = grid.GetDataTableRowIndex(pVal.Row);
@@ -158,7 +154,17 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                                 {
                                     form.Freeze(false);
                                 }
+
                             }
+                            if (pVal.ItemUID == "Item_7")
+                            {
+                                MarcarDesmarcarTodos();
+                            }
+                        }
+                        break;
+                    case BoEventTypes.et_ITEM_PRESSED:
+                        {
+
                         }
                         break;
                 }
@@ -174,19 +180,44 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("marcando", BoMessageTime.bmt_Medium, BoStatusBarMessageType.smt_Warning);
                 string marcado = !((SAPbouiCOM.CheckBox)form.Items.Item("Item_7").Specific).Checked ? "Y" : "N";
 
+                DataTable dt = form.DataSources.DataTables.Item("DT_0");
+                Grid grid = (Grid)form.Items.Item("Item_6").Specific;
+
+
                 for (int row = 0; row < table.Rows.Count; row++)
                 {
                     if(!table.Columns.Item("Selecionado").Cells.Item(row).Value.ToString()!.Equals(marcado, StringComparison.OrdinalIgnoreCase))
                     {
                         table.Columns.Item("Selecionado").Cells.Item(row).Value = marcado;
-                        if(marcado == "Y")
+                        if (marcado == "Y")
+                        {
+                            if (linhas_selecionadas.Contains(row))
+                                continue;
+                            //Coluna Comissão
+                            totalValue += Convert.ToDouble(dt.GetValue("Comissão", row).ToString(), new CultureInfo("pt-BR"));
+
+                            //Coluna Total
+                            totalValue2 += Convert.ToDouble(dt.GetValue("Total", row).ToString(), new CultureInfo("pt-BR"));
+
                             linhas_selecionadas.Add(row);
+                        }
                         else
+                        {
+                            totalValue -= Convert.ToDouble(grid.DataTable.Columns.Item("Comissão").Cells.Item(row).Value.ToString(), new CultureInfo("pt-BR"));
+
+                            totalValue2 -= Convert.ToDouble(grid.DataTable.Columns.Item("Total").Cells.Item(row).Value.ToString(), new CultureInfo("pt-BR"));
+
                             linhas_selecionadas.Remove(row);
+                        }
                     }
                 }
+                totalValue = Math.Round(totalValue, 2);
+                ((EditText)form.Items.Item("Item_11").Specific).Value = totalValue.ToString(new CultureInfo("en-US"));
+
+                totalValue2 = Math.Round(totalValue2, 2);
+                ((EditText)form.Items.Item("Item_9").Specific).Value = totalValue2.ToString(new CultureInfo("en-US"));
+
                 SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("marcação finalizada", BoMessageTime.bmt_Medium, BoStatusBarMessageType.smt_Warning);
-                SomaTotal();
             }
             catch (Exception)
             {
@@ -197,53 +228,7 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 form.Freeze(false);
             }
         }
-        private void SomaTotal()
-        {
-            form.Freeze(true);
 
-            try
-            {
-                DataTable dt = form.DataSources.DataTables.Item("DT_0");
-                Grid grid = (Grid)form.Items.Item("Item_6").Specific;
-
-                double val = 0;
-                double val2 = 0;
-                for (int i = 0; i < grid.Rows.Count; i++)
-                {
-                    if (grid.DataTable.Columns.Item("Selecionado").Cells.Item(i).Value.ToString() == "Y")
-                    {
-                        //Coluna Comissão
-                        totalValue += Convert.ToDouble(dt.GetValue("Comissão", i).ToString(), new CultureInfo("pt-BR"));
-                        val = Math.Round(totalValue, 2);
-                        ((EditText)form.Items.Item("Item_11").Specific).Value = val.ToString(new CultureInfo("en-US"));
-
-                        //Coluna Total
-                        totalValue2 += Convert.ToDouble(dt.GetValue("Total", i).ToString(), new CultureInfo("pt-BR"));
-                        val2 = Math.Round(totalValue2, 2);
-                        ((EditText)form.Items.Item("Item_9").Specific).Value = val2.ToString(new CultureInfo("en-US"));
-                    }
-                    else
-                    {
-                        totalValue -= Convert.ToDouble(grid.DataTable.Columns.Item("Comissão").Cells.Item(i).Value.ToString(), new CultureInfo("pt-BR"));
-                        val = Math.Round(totalValue, 2);
-                        ((EditText)form.Items.Item("Item_11").Specific).Value = val.ToString(new CultureInfo("en-US"));
-
-                        totalValue2 -= Convert.ToDouble(grid.DataTable.Columns.Item("Total").Cells.Item(i).Value.ToString(), new CultureInfo("pt-BR"));
-                        val2 = Math.Round(totalValue2, 2);
-                        ((EditText)form.Items.Item("Item_9").Specific).Value = val.ToString(new CultureInfo("en-US"));
-                    }
-                }
-            }
-            catch
-            {
-
-            }
-            finally
-            {
-                form.Freeze(false);
-            }
-
-        }
 
         private void AtualizaGrid()
         {
