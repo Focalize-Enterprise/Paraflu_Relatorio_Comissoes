@@ -94,22 +94,29 @@ namespace ADDON_PARAFLU.FORMS.UserForms
             {
                 switch (pVal.EventType)
                 {
-                    case BoEventTypes.et_CLICK:
+                    case BoEventTypes.et_ITEM_PRESSED:
                         {
                             if (pVal.ItemUID == "Item_6" && pVal.ColUID == "Selecionado" && !pVal.BeforeAction)
                             {
-                                form.Freeze(true);
-
                                 try
                                 {
+                                    form.Freeze(true);
+                                    // valida row
                                     Grid grid = (Grid)form.Items.Item("Item_6").Specific;
+                                    if(pVal.Row < 0 || pVal.Row > grid.Rows.Count)
+                                    {
+                                        // fora das linhas visiveis do grid
+                                        return;
+                                    }
+
+
                                     // busca a linha mesmo se o grid estiver colapsado
                                     int row = grid.GetDataTableRowIndex(pVal.Row);
 
                                     // nova versão -- João Copini
                                     if (grid.DataTable.Columns.Item("Selecionado").Cells.Item(row).Value.ToString() == "Y")
                                     {
-                                        if(linhas_selecionadas.Contains(row))
+                                        if (linhas_selecionadas.Contains(row))
                                             return;
 
                                         //Coluna Comissão
@@ -162,11 +169,11 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                             }
                         }
                         break;
-                    case BoEventTypes.et_ITEM_PRESSED:
-                        {
+                    //case BoEventTypes.et_ITEM_PRESSED:
+                    //    {
 
-                        }
-                        break;
+                    //    }
+                    //    break;
                 }
             }
         }
@@ -254,7 +261,8 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                     SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Selecione um perido final", BoMessageTime.bmt_Short, BoStatusBarMessageType.smt_Warning);
                     return;
                 }
-                if (_api.Company.DbServerType != BoDataServerTypes.dst_HANADB)
+
+                if (_api.Company!.DbServerType != BoDataServerTypes.dst_HANADB)
                     query = Queries.Notas_Fiscais_SQL.Replace("Dataini", dataini).Replace("Datafim", datafim);
                 else
                     query = Queries.Notas_Fiscais_HANA.Replace("Dataini", dataini).Replace("Datafim", datafim);
@@ -263,6 +271,9 @@ namespace ADDON_PARAFLU.FORMS.UserForms
                 for (int index = 0; index < grid.Columns.Count; index++)
                     grid.Columns.Item(index).Editable = false;
                 grid.Columns.Item("Selecionado").Editable = true;
+
+                // limpa as caixas de texto
+                ClearSelection();
             }
             catch (Exception ex)
             {
