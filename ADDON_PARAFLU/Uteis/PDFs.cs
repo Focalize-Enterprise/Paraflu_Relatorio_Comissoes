@@ -15,6 +15,7 @@ namespace ADDON_PARAFLU.Uteis
         {
             _api = api;
         }
+
         public string GeraPDF(string periodo1, string periodo2, string cardCode, string DBuser, string DBsenha, string reportPath, string pdfPath)
         {
             SAPbouiCOM.Framework.Application.SBO_Application.StatusBar.SetText("Gerando PDF...", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
@@ -22,7 +23,7 @@ namespace ADDON_PARAFLU.Uteis
             string banco = _api.Company.CompanyDB;
             string user = DBuser;
             string pass = DBsenha;
-            string servicePath = @$"{Application.StartupPath}CrystalReport.exe";
+            string servicePath = $"{Application.StartupPath}\\Report\\CrystalReport.exe";
             string exeArgs = $@"""{periodo1};{periodo2};{cardCode};{server};{banco};{user};{pass};{reportPath};{pdfPath}""";
             ProcessStartInfo info = new(servicePath)
             {
