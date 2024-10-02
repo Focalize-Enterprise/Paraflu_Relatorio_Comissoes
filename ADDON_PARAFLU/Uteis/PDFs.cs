@@ -23,7 +23,7 @@ namespace ADDON_PARAFLU.Uteis
             string banco = _api.Company.CompanyDB;
             string user = DBuser;
             string pass = DBsenha;
-            string servicePath = $"{Application.StartupPath}\\Report\\CrystalReport.exe";
+            string servicePath = $"{Application.StartupPath}Report\\CrystalReport.exe";
             string exeArgs = $@"""{periodo1};{periodo2};{cardCode};{server};{banco};{user};{pass};{reportPath};{pdfPath}""";
             ProcessStartInfo info = new(servicePath)
             {
